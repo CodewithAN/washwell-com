@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    height: 45,
   },
   individual: {
     flex: 1,
