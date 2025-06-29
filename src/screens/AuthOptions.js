@@ -25,7 +25,7 @@ const AuthOptions = () => {
           <View style={styles.mobileNumberContainer}>
             <RNView style={styles.flagContainer}>
               <Img source={uaeFlag} height={22} width={22} />
-              <RNText style={externalStyles.txtSm}>+972</RNText>
+              <RNText style={externalStyles.txtSm}>+971</RNText>
             </RNView>
             <View style={styles.input}>
               <RNTextInput placeholder={"Mobile Number"} />
