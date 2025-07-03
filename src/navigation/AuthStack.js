@@ -7,6 +7,9 @@ import Enable from "../screens/Enable";
 import Choose from "../screens/Choose";
 import Home from "../screens/Home";
 import Menu from "../screens/Menu";
+import Orders from "../screens/Orders";
+import Notifications from "../screens/Notifications";
+import Details from "../screens/Details";
 
 
 
@@ -15,7 +18,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="menu"
+    initialRouteName="detail"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -25,6 +28,9 @@ const AuthStack = () => (
     <Stack.Screen name="choose" component={Choose} />
     <Stack.Screen name="home" component={Home} />
     <Stack.Screen name="menu" component={Menu} />
+    <Stack.Screen name="order" component={Orders} />
+    <Stack.Screen name="notification" component={Notifications} />
+    <Stack.Screen name="detail" component={Details} />
     
   </Stack.Navigator>
 );

@@ -52,7 +52,7 @@ const Menu = () => {
         {menuItems.map((item, index) => (
           <RNView key={index} style={styles.menuItem}>
             <View style={styles.menuContent}>
-              <Img source={item.icon} width={30} height={30} color={colors.primary} />
+              <Img source={item.icon} width={25} height={25} color={colors.primary} />
               <RNText style={styles.menuText}>{item.title}</RNText>
             </View>
             <Img source={arrow} style={styles.arrowIcon} />
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menuList: {
-    gap: 12,
+    gap: 10,
 
   },
   menuItem: {
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
   },
   menuText: {
     marginLeft: 20,
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 13,
+    fontWeight: "semiBold",
     color: colors.primary,
     textAlign: 'left',
   },

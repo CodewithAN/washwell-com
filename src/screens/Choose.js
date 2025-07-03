@@ -2,7 +2,7 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Header from "../components/global/Header";
 import RNText from '../components/ui/RNText';
 import colors, { externalStyles } from '../utils/Theme';
-import { horizantGap } from '../utils/Constant';
+import { horizantGap, primaryHeight } from '../utils/Constant';
 import RNView from '../components/ui/RNView';
 import Img from '../components/ui/Img';
 import choose from "../../assets/icons/choosesearch.svg";
@@ -44,7 +44,7 @@ const Choose = () => {
         </RNView>
       </View>
 
-      <TouchableOpacity style={styles.mapButton}>
+      <TouchableOpacity activeOpacity={0.7} style={styles.mapButton}>
         <Img source={map} width={24} height={24} />
         <RNText style={[externalStyles.txtMd, styles.mapInput]} fontWeight='bold'>Map</RNText>
       </TouchableOpacity>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingVertical: "15%",
+    paddingBottom: "15%",
     gap: 15,
   },
   top: {
@@ -76,28 +76,29 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
+    height:primaryHeight,
     gap: 5,
   },
   location: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 10,
   },
   center: {
-    gap: 5,
+    gap: 5
   },
   mapButton: {
-    width: "30%",
+    width: "25%",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    borderRadius: 25,
+    paddingVertical: 15,
+    //paddingHorizontal: 5,
+    borderRadius: 20,
     gap: 5,
     marginHorizontal: "auto",
-    marginTop: 'auto',
+    marginTop: 'auto',  
   },
   mapInput: {
     color: "#F8F3EA",
