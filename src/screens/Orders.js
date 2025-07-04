@@ -33,19 +33,19 @@ const Orders = () => {
           </View>
         </View>
 
-        <View>
+      <View>
           <Img source={notification} style={styles.homeImage} resizeMode="contain" />
-        </View>
+      </View>
 
-        <RNView style={styles.searchBar}>
+      <RNView style={styles.searchBar}>
           <Img source={choose} width={16} height={16} />
           <RNText color='primary' style={externalStyles.txtMd}> Search Orders...</RNText>
-        </RNView>
+      </RNView>
 
-        <RNText fontWeight='semiBold' style={externalStyles.txtMd}>Today</RNText>
+      <RNText fontWeight='semiBold' style={externalStyles.txtMd}>Today</RNText>
         {/* Static Order Card for Today */}
         
-        <View style={styles.orders}>
+      <View style={styles.orders}>
             {/* 1 */}
         <View style={styles.orderCard}>
           <View style={styles.orderTopRow}>
@@ -106,10 +106,10 @@ const Orders = () => {
             <RNText style={styles.viewMore}>View More</RNText>
           </View>
         </View>
-        </View>
+      </View>
       
 
-        <RNText fontWeight='semiBold' style={externalStyles.txtMd}>05 Apr 2025</RNText>
+      <RNText fontWeight='semiBold' style={externalStyles.txtMd}>05 Apr 2025</RNText>
         {/* Static Order Card for 05 Apr 2025 */}
         <View style={styles.orders}>
                     <View style={styles.orderCard}>
@@ -131,11 +131,11 @@ const Orders = () => {
             <RNText style={styles.viewMore}>View More</RNText>
           </View>
         </View>
-        </View>
+      </View>
 
-        <TouchableOpacity TouchableOpacity={0.7}>
+      <TouchableOpacity TouchableOpacity={0.7}>
         <Button title={"Place Order"} variant='gradient' />
-        </TouchableOpacity>
+      </TouchableOpacity>
 
       </View>
     </ScrollView>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     gap:5,
   },
   orderCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 10,
     padding: 20,
     position:"relative",

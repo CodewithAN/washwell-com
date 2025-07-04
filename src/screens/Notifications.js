@@ -26,9 +26,9 @@ const Notifications = () => {
       </View>
 
       
-        <RNText fontWeight="semiBold" style={[externalStyles.txtMd,styles.header]}>
+      <RNText fontWeight="semiBold" style={[externalStyles.txtMd,styles.header]}>
         Today
-        </RNText>
+      </RNText>
       <View style={styles.notificationItem}>
         <View style={styles.contentContainer}>
           <View style={styles.iconContainer}>
