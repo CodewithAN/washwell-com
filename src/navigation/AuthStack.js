@@ -12,6 +12,8 @@ import Notifications from "../screens/Notifications";
 import Details from "../screens/Details";
 import Address from "../screens/Address";
 import Cart from "../screens/Cart";
+import Confirmation from "../screens/Confirmation";
+import PlaceOrder from "../screens/PlaceOrder";
 
 
 
@@ -20,7 +22,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="cart"
+    initialRouteName="place-order"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -35,6 +37,8 @@ const AuthStack = () => (
     <Stack.Screen name="detail" component={Details} />
     <Stack.Screen name="address" component={Address} />
     <Stack.Screen name="cart" component={Cart} />
+    <Stack.Screen name="confirm" component={Confirmation} />
+    <Stack.Screen name="place-order" component={PlaceOrder} />
     
   </Stack.Navigator>
 );

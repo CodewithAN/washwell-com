@@ -221,9 +221,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 46,
     height: 40,
-    top: "50%",
-    left: "50%",
-    transform: [{ translateX: -23 }, { translateY: -20 }],
+    top: 12,
+    left: 12,
+    //transform: [{ translateX: -23 }, { translateY: -20 }],
   },
   cardContainer: {
     flexDirection: "row",
