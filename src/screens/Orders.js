@@ -133,7 +133,7 @@ const Orders = () => {
         </View>
       </View>
 
-      <TouchableOpacity TouchableOpacity={0.7}>
+      <TouchableOpacity activeOpacity={0.7}>
         <Button title={"Place Order"} variant='gradient' />
       </TouchableOpacity>
 

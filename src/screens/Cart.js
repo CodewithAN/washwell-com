@@ -43,8 +43,8 @@ const Cart = () => {
         <View style={[styles.innerContainer, styles.selectedTab]}>
           <Img source={dryClean} width={38} height={40} />
           <View style={styles.text}>
-            <RNText color="white">Clean&</RNText>
-            <RNText color="white">Press</RNText>
+            <RNText style={{color:colors.white}}>Clean&</RNText>
+            <RNText style={{color:colors.white}}>Press</RNText>
           </View>
         </View>
 

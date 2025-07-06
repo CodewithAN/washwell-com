@@ -14,6 +14,9 @@ import Address from "../screens/Address";
 import Cart from "../screens/Cart";
 import Confirmation from "../screens/Confirmation";
 import PlaceOrder from "../screens/PlaceOrder";
+import Reference from "../screens/Reference";
+import Payment from "../screens/Payment";
+import Card from "../screens/Card";
 
 
 
@@ -22,7 +25,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="place-order"
+    initialRouteName="payment"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -39,6 +42,9 @@ const AuthStack = () => (
     <Stack.Screen name="cart" component={Cart} />
     <Stack.Screen name="confirm" component={Confirmation} />
     <Stack.Screen name="place-order" component={PlaceOrder} />
+    <Stack.Screen name="refer" component={Reference} />
+    <Stack.Screen name="payment" component={Payment} />
+    <Stack.Screen name="card" component={Card} />
     
   </Stack.Navigator>
 );

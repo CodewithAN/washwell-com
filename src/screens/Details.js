@@ -46,14 +46,14 @@ const Details = () => {
           <RNView style={styles.text} >
             <RNText style={[externalStyles.txtMd,styles.input]}>Change Password </RNText>
           </RNView>
-          <TouchableOpacity TouchableOpacity={0.7}>
+          <TouchableOpacity activeOpacity={0.7}>
             <RNText style={styles.link}>Change Address</RNText>
           </TouchableOpacity>
           
 
         </View>
 
-        <TouchableOpacity TouchableOpacity={0.7} >
+        <TouchableOpacity activeOpacity={0.7} >
         <Button title={"Confirm"} variant='gradient'style={styles.button} />
       </TouchableOpacity>
 
