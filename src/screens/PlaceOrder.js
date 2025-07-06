@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity,TextInput } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import RNText from '../components/ui/RNText';
 import Header from '../components/global/Header';
@@ -12,11 +12,11 @@ import ellipse from '../../assets/order/ellipse.png';
 import RNView from '../components/ui/RNView';
 import RNTextInput from '../components/ui/RNTextInput';
 import Button from '../components/ui/Button';
-import { TextInput } from 'react-native-gesture-handler';
+
 
 const PlaceOrder = () => {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}> 
+   // <GestureHandlerRootView style={{ flex: 1 }}> 
       <ScrollView>
         <View style={styles.mainContainer}>
           <View style={styles.top}>
@@ -82,7 +82,10 @@ const PlaceOrder = () => {
 
           <View style={styles.driver}>
             <RNText fontWeight="bold">Driver Tip</RNText>
-            <RNTextInput>0.00</RNTextInput>
+            <RNView>
+              <TextInput placeholder='0.00'/>
+            </RNView>
+            
             <View style={styles.driverTip}>
               <RNView style={styles.driverInput}>
                 <RNText>3</RNText>
@@ -106,7 +109,7 @@ const PlaceOrder = () => {
           </View>
 
           <RNView >
-            <TextInput >Anything else you’d like us to know?</TextInput>
+            <TextInput placeholder='Anything else you’d like us to know?'/>
           </RNView>
 
           <View style={styles.method}>
@@ -165,7 +168,7 @@ const PlaceOrder = () => {
           </View>
         </View>
       </ScrollView>
-    </GestureHandlerRootView>
+    //</GestureHandlerRootView>
   );
 };
 

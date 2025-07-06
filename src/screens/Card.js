@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View ,TextInput} from 'react-native';
 import Header from '../components/global/Header';
 import RNText from '../components/ui/RNText';
 import colors, { externalStyles } from '../utils/Theme';
@@ -11,6 +11,7 @@ import tick from "../../assets/icons/tick.svg";
 import visa from '../../assets/order/visa.svg';
 import ellipse from '../../assets/order/ellipse.png';
 import Button from '../components/ui/Button';
+
 
 
 
@@ -63,22 +64,25 @@ const Card = () => {
       </View>
 
       <View style={{gap:5}}>
-        <RNView style={{gap:10}}>
-          <RNText>Card Holder Name </RNText>
-          <RNText style={externalStyles.txtMd} fontWeight='SemiBold'>Shahid Abid</RNText>
+        <RNView  >
+         <RNText>Card Holder Name</RNText>
+         <TextInput placeholder='Shahid Abid' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
         </RNView>
-        <RNView style={{gap:10}}>
+        <RNView >
           <RNText>Card Number </RNText>
-          <RNText style={externalStyles.txtMd} fontWeight='SemiBold'>4015 STYN 1586 BQTD</RNText>
+          <TextInput placeholder='4015 STYN 1586 BQTD' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
+
         </RNView>
         <View style={styles.input} >
-          <RNView style={{gap:10,width:"49%"}}>
+          <RNView style={{width:"49%"}}>
             <RNText>Expiry Date</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='SemiBold'>5/29</RNText>
+            <TextInput placeholder='5/29' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
+
           </RNView >
-            <RNView style={{gap:10,width:"48%"}}>
+            <RNView style={{width:"48%"}}>
             <RNText>CYY</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='SemiBold'>068</RNText>
+            <TextInput placeholder='068' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
+
           </RNView>
         </View>
       </View>
@@ -243,5 +247,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 3,
   },
-
+ 
 })
