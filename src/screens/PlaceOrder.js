@@ -16,7 +16,7 @@ import Button from '../components/ui/Button';
 
 const PlaceOrder = () => {
   return (
-   // <GestureHandlerRootView style={{ flex: 1 }}> 
+    
       <ScrollView>
         <View style={styles.mainContainer}>
           <View style={styles.top}>
@@ -68,7 +68,7 @@ const PlaceOrder = () => {
           <View style={{ gap: 5 }}>
             <View style={styles.promoSec}>
               <View style={styles.promocode}>
-                <TextInput>Add Promo Code</TextInput>
+                <TextInput placeholder='Add Promo Code'/>
               </View>
               <View style={styles.apply}>
                 <RNText style={{color:colors.white}}>Apply</RNText>
@@ -168,7 +168,7 @@ const PlaceOrder = () => {
           </View>
         </View>
       </ScrollView>
-    //</GestureHandlerRootView>
+    
   );
 };
 

@@ -20,7 +20,7 @@ const Login = () => {
         <TouchableOpacity style={styles.forgetButton} activeOpacity={0.7}>
           <RNText color={"primary"}>Forget Password?</RNText>
         </TouchableOpacity>
-        <Button style={styles.btn} title={"Login"} />
+        <Button style={styles.btn} title={"Login"} variant="gradient" />
       </View>
       <View style={styles.donotHaveAccount}>
         <RNText>Don't have an account?</RNText>

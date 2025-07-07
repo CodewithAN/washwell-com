@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View,TouchableOpacity,TextInput } from 'react-native'
 import Header from '../components/global/Header';
 import RNText from '../components/ui/RNText';
 import colors, { externalStyles } from '../utils/Theme';
@@ -29,19 +29,20 @@ const Details = () => {
         <View style={styles.details}>
           <RNView style={styles.text} >
             <RNText style={externalStyles.txtXs}>First Name</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='semiBold'>Shahid</RNText>
+            <TextInput placeholder='Shahid' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
           </RNView>
           <RNView style={styles.text} >
             <RNText style={externalStyles.txtXs}>Last Name</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='semiBold'>Abid</RNText>
+            <TextInput placeholder='Abid' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
           </RNView>
           <RNView style={styles.text} >
             <RNText style={externalStyles.txt}>Email Address</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='semiBold'>shahidabid94@gmail.com</RNText>
+            <TextInput placeholder='shahidabid94@gmail.com' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
           </RNView>
           <RNView style={styles.text} >
             <RNText style={externalStyles.txtXs}>Phone Number</RNText>
-            <RNText style={externalStyles.txtMd} fontWeight='semiBold'>+971 8800850641</RNText>
+            <TextInput placeholder='+971 8800850641' style={[externalStyles.txtMd,{fontWeight:"500"}]}/>
+           
           </RNView>
           <RNView style={styles.text} >
             <RNText style={[externalStyles.txtMd,styles.input]}>Change Password </RNText>
@@ -94,11 +95,7 @@ const styles = StyleSheet.create({
     
 
   },
-  text:{
-    gap:10,
-    
-
-  },
+ 
   input:{
     
    paddingVertical:11,

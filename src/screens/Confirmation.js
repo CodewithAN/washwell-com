@@ -7,7 +7,7 @@ import Img from '../components/ui/Img'
 import ellipse from "../../assets/icons/ellipse.svg"
 import tick from "../../assets/icons/tick.svg"
 import Button from '../components/ui/Button'
-import RNText from '../components/ui/RNText'
+
 
 const Confirmation = () => {
   return (

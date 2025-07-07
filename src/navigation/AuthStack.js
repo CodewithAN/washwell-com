@@ -17,6 +17,8 @@ import PlaceOrder from "../screens/PlaceOrder";
 import Reference from "../screens/Reference";
 import Payment from "../screens/Payment";
 import Card from "../screens/Card";
+import Wallet from "../screens/Wallet";
+import Location from "../screens/Location";
 
 
 
@@ -25,7 +27,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="place-order"
+    initialRouteName="location"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -45,6 +47,8 @@ const AuthStack = () => (
     <Stack.Screen name="refer" component={Reference} />
     <Stack.Screen name="payment" component={Payment} />
     <Stack.Screen name="card" component={Card} />
+    <Stack.Screen name="wallet" component={Wallet} />
+    <Stack.Screen name="location" component={Location} />
     
   </Stack.Navigator>
 );

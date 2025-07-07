@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity,TextInput } from 'react-native';
 import RNText from '../components/ui/RNText';
 import Header from '../components/global/Header';
 import colors, { externalStyles } from '../utils/Theme';
@@ -74,10 +74,13 @@ const Cart = () => {
       </View>
 
       {/* Search Bar */}
-      <RNView style={styles.searchBar}>
-        <Img source={choose} width={16} height={16} />
-        <RNText color='primary' style={externalStyles.txtMd}>Search here</RNText>
-      </RNView>
+       <RNView style={styles.searchBar}>
+            <Img source={choose} width={16} height={16} />
+            <TextInput
+              placeholder="Search here ..."
+              placeholderTextColor={colors.primary}
+            />
+          </RNView>
 
       {/* T-shirt Card  */}
       <RNView style={styles.cardWrapper}>
@@ -195,7 +198,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: primaryHeight,
+   
     gap: 10,
     marginTop: 10,
   },
