@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { primarBorderRadius, primaryHeight } from "./Constant";
 
 const colors = {
   primary: "#3A70DD",
@@ -22,6 +23,19 @@ const externalStyles = StyleSheet.create({
   },
   txtXs: {
     fontSize: 12,
+  },
+  height: {
+    height: "100%",
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "white",
+    height: primaryHeight,
+    paddingHorizontal: 14,
+    elevation: 1,
+    borderRadius: primarBorderRadius,
   },
 });
 

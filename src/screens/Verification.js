@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import colors, { externalStyles } from '../utils/Theme';
-import { horizantGap } from '../utils/Constant';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import colors, { externalStyles } from "../utils/Theme";
+import { horizantGap } from "../utils/Constant";
 import Header from "../components/global/Header";
 import Img from "../components/ui/Img";
 import logo from "../../assets/images/global/logo.svg";
 import { vw } from "../utils/ScreenSize";
-import RNText from '../components/ui/RNText';
-import RNTextInput from '../components/ui/RNTextInput';
-import Button from '../components/ui/Button';
+import RNText from "../components/ui/RNText";
+import RNTextInput from "../components/ui/RNTextInput";
+import Button from "../components/ui/Button";
 
-const Verification = () => {
+const Verification = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
       <Header />
@@ -17,8 +17,16 @@ const Verification = () => {
         <Img source={logo} width={60 * vw} height={70} />
       </View>
       <View style={styles.container}>
-        <RNText color='primary' fontWeight='bold' style={[externalStyles.txtLg, styles.otpText]}>Enter OTP</RNText>
-        <RNText style={styles.plainText}>Please enter OTP sent to +91 8800850641</RNText>
+        <RNText
+          color="primary"
+          fontWeight="bold"
+          style={[externalStyles.txtLg, styles.otpText]}
+        >
+          Enter OTP
+        </RNText>
+        <RNText style={styles.plainText}>
+          Please enter OTP sent to +91 8800850641
+        </RNText>
 
         <View style={styles.inputContainer}>
           <RNTextInput />
@@ -27,12 +35,18 @@ const Verification = () => {
           <RNTextInput />
         </View>
 
-        <Button title={"Confirm"} variant="gradient"/>
+        <Button
+          onPress={() => navigation.navigate("enable")}
+          title={"Confirm"}
+          variant="gradient"
+        />
 
         <View style={styles.recieveOTP}>
           <RNText>Did not receive OTP? </RNText>
           <TouchableOpacity activeOpacity={0.7}>
-            <RNText fontWeight='SemiBold' color='primary'>Resend OTP</RNText>
+            <RNText fontWeight="SemiBold" color="primary">
+              Resend OTP
+            </RNText>
           </TouchableOpacity>
         </View>
       </View>
@@ -41,7 +55,10 @@ const Verification = () => {
       <View style={styles.haveAccount}>
         <RNText>have an account?</RNText>
         <TouchableOpacity activeOpacity={0.7}>
-          <RNText fontWeight='SemiBold' color='primary'> Log in</RNText>
+          <RNText fontWeight="SemiBold" color="primary">
+            {" "}
+            Log in
+          </RNText>
         </TouchableOpacity>
       </View>
     </View>
@@ -54,7 +71,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.background,
-    alignItems:"center",
+    alignItems: "center",
     paddingHorizontal: horizantGap,
     gap: 15,
   },
@@ -64,12 +81,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   otpText: {
-   // margin: "auto",
-   textAlign:"center",
+    // margin: "auto",
+    textAlign: "center",
   },
   plainText: {
     //margin: "auto",
-    textAlign:"center",
+    textAlign: "center",
   },
   inputContainer: {
     width: "12.8%",
@@ -77,19 +94,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   recieveOTP: {
     flexDirection: "row",
     alignItems: "center",
     margin: "auto",
+    gap: 1,
   },
   haveAccount: {
     flexDirection: "row",
     alignItems: "center",
-    position: 'absolute',
+    position: "absolute",
     bottom: "20%",
-    width: '100%',
-    justifyContent: 'center',
+    width: "100%",
+    justifyContent: "center",
+    gap: 5,
   },
 });

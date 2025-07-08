@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -44,12 +44,10 @@ const MainNavigator = () => {
 
   return (
     <NavigationContainer>
-      <StatusBar
-        animated
-        barStyle="dark-content"
-        backgroundColor={colors.background}
-      />
-      {user ? <MainStack /> : <AuthStack />}
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <SafeAreaView style={{ flex: 1 }}>
+        {user ? <MainStack /> : <AuthStack />}
+      </SafeAreaView>
       <Toast style={{ width: "100%" }} />
     </NavigationContainer>
   );

@@ -1,5 +1,5 @@
 import {
-  ScrollView,
+  ImageBackground,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -8,95 +8,78 @@ import {
 import Header from "../components/global/Header";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, primaryHeight } from "../utils/Constant";
-import RNView from "../components/ui/RNView";
+import { horizantGap } from "../utils/Constant";
 import Img from "../components/ui/Img";
 import choose from "../../assets/icons/choosesearch.svg";
-import map from "../../assets/location/map.svg";
 import bookmark from "../../assets/location/bookmark.svg";
 import location from "../../assets/location/location.svg";
-import Button from '../components/ui/Button';
+import map from "../../assets/location/map.svg";
+import Button from "../components/ui/Button";
 
-
-const Location = () => {
+const Location = ({ navigation }) => {
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.mainContainer}>
-        {/* Top Section with Header and Title */}
-        <View style={styles.top}>
-          <Header />
-          <View style={styles.textContainer}>
-            <RNText
-              style={externalStyles.txtXl}
-              color="primary"
-              fontWeight="bold"
-            >
-              Choose Location
-            </RNText>
-          </View>
+    <View style={styles.mainContainer}>
+      {/* Top Section with Header and Title */}
+      <Header title="Choose Location" />
+
+      <View style={styles.imageContainer}>
+        <Img source={map} style={{ height: "100%", width: "100%" }} />
+        <View style={[externalStyles.searchBar, styles.searchBar]}>
+          <Img source={choose} width={16} height={16} />
+          <TextInput
+            placeholder="Search location ..."
+            placeholderTextColor={colors.primary}
+          />
         </View>
 
-        {/* Image Container with Search Bar and Save Button */}
-        <View style={styles.imageContainer}>
-          <Img source={map} width={432} height={669} style={styles.img} />
+        {/* Save Button at Bottom */}
+        <TouchableOpacity activeOpacity={0.7} style={styles.saveButton}>
+          <Img source={bookmark} width={18} height={18} />
+          <RNText
+            style={[externalStyles.txtMd, { color: colors.white }]}
+            fontWeight="semiBold"
+          >
+            Saved
+          </RNText>
+        </TouchableOpacity>
+      </View>
 
-          {/* Search Bar at Top */}
-          <RNView style={styles.searchBar}>
-            <Img source={choose} width={16} height={16} />
-            <TextInput
-              placeholder="Search location ..."
-              placeholderTextColor={colors.primary}
-            />
-          </RNView>
-
-          {/* Save Button at Bottom */}
-          <TouchableOpacity activeOpacity={0.7} style={styles.saveButton}>
-            <Img source={bookmark} width={24} height={24} />
-            <RNText
-              style={[externalStyles.txtMd, { color: colors.white }]}
-              fontWeight="semiBold"
-            >
-              Saved
-            </RNText>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{gap:5}}>
+      <View style={styles.bottomContainer}>
+        <View style={{ gap: 5 }}>
           <View style={styles.textLocation}>
-            <Img source={location} width={24} height={24} />
-            <RNText style={externalStyles.txtXl} color="primary">
-              Confirm location
-            </RNText>
-          </View>
-          <View style={{ paddingHorizontal: horizantGap, marginLeft: 35 }}>
-            <RNText>Muwaileh Park, Sharjah, UAE</RNText>
+            <Img
+              source={location}
+              style={{ marginTop: 3 }}
+              width={24}
+              height={24}
+            />
+            <View>
+              <RNText style={externalStyles.txtXl} color="primary">
+                Confirm location
+              </RNText>
+              <RNText>Muwaileh Park, Sharjah, UAE</RNText>
+            </View>
           </View>
         </View>
 
-        <View style={styles.orderButton} >
-            <TouchableOpacity activeOpacity={0.7}>
-              <Button title={'Confirm Location'} variant="gradient" />
-            </TouchableOpacity>
+        <Button
+          onPress={() => navigation.navigate("home")}
+          title={"Confirm Location"}
+          variant="gradient"
+        />
       </View>
-
-
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
 export default Location;
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    paddingBottom:"10%"
-  },
-
   mainContainer: {
-    flex: 1,
+    height: "100%",
     backgroundColor: colors.background,
+    display: "flex",
+    flexDirectiom: "column",
   },
   top: {
     flexDirection: "row",
@@ -110,18 +93,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   imageContainer: {
-    position: "relative", 
-    width: "100%",
-    height: 669, 
+    position: "relative",
+    flex: 1,
+    marginTop: 8,
   },
   img: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover", 
+    resizeMode: "cover",
   },
   searchBar: {
     position: "absolute",
-    top: "6%",
+    top: 20,
     left: horizantGap,
     right: horizantGap,
     flexDirection: "row",
@@ -132,27 +115,29 @@ const styles = StyleSheet.create({
 
   saveButton: {
     position: "absolute",
-    bottom: "8%",
+    bottom: 20,
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 15,
     gap: 5,
-    width: "30%",
   },
   textLocation: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: 10,
+  },
+  orderButton: {
     paddingHorizontal: horizantGap,
   },
-   orderButton: {
-   
-    paddingHorizontal:horizantGap,
-    marginTop:"5%",
+  bottomContainer: {
+    paddingHorizontal: horizantGap,
+    paddingBottom: 20,
+    paddingTop: 10,
+    gap: 20,
   },
 });

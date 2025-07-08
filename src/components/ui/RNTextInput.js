@@ -15,10 +15,17 @@ const RNTextInput = ({
   const height = primaryHeight;
 
   return (
-    <View style={[styles.container, { height, width: "100%" }, style]}>
+    <View
+      style={[
+        styles.container,
+        { height, width: "100%" },
+        style,
+        label && styles.labelContainer,
+      ]}
+    >
       {label && <RNText style={styles.label}>{label}</RNText>}
       <TextInput
-        style={styles.input}
+        style={label ? styles.labelInput : styles.input}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -39,16 +46,25 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   label: {
-    position: "absolute",
-    top: -8,
-    left: 10,
-    backgroundColor: colors.lightBlue,
     paddingHorizontal: 5,
     fontSize: txtSm,
     color: colors.black,
   },
+  labelContainer: {
+    paddingTop: 9,
+    height: "auto",
+  },
   input: {
     height: 40,
+    fontSize: txtSm,
+    color: colors.black,
+    backgroundColor: colors.white,
+    borderRadius: primarBorderRadius,
+    paddingHorizontal: 10,
+    fontFamily: font.regular,
+    fontSize: txtSm,
+  },
+  labelInput: {
     fontSize: txtSm,
     color: colors.black,
     backgroundColor: colors.white,

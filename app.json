@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Wash Well  ",
-    "slug": "wash-well",
+    "name": "Wash Well",
+    "slug": "Wash-Well",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,12 +18,18 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#CCF5F5"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.artanistic.WashWell"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4c46f305-d3c9-43a9-b6e3-d32c26652082"
+      }
     }
   }
 }

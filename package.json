@@ -26,7 +26,6 @@
     "react": "19.0.0",
     "react-i18next": "^15.5.3",
     "react-native": "0.79.4",
-    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.26.0",
     "react-native-hr": "^1.1.4",
     "react-native-raw-bottom-sheet": "^3.0.0",

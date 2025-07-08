@@ -20,14 +20,12 @@ import Card from "../screens/Card";
 import Wallet from "../screens/Wallet";
 import Location from "../screens/Location";
 
-
-
 const Stack = createNativeStackNavigator();
 
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="location"
+    initialRouteName="auth-options"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -49,7 +47,6 @@ const AuthStack = () => (
     <Stack.Screen name="card" component={Card} />
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
-    
   </Stack.Navigator>
 );
 

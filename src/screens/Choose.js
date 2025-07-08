@@ -1,8 +1,8 @@
-import { StyleSheet, View, TouchableOpacity ,TextInput} from "react-native";
+import { StyleSheet, View, TouchableOpacity, TextInput } from "react-native";
 import Header from "../components/global/Header";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, primaryHeight } from "../utils/Constant";
+import { horizantGap } from "../utils/Constant";
 import RNView from "../components/ui/RNView";
 import Img from "../components/ui/Img";
 import choose from "../../assets/icons/choosesearch.svg";
@@ -10,29 +10,19 @@ import home from "../../assets/icons/home.svg";
 import work from "../../assets/icons/work.svg";
 import map from "../../assets/icons/map.svg";
 
-const Choose = () => {
+const Choose = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.top}>
-        <Header />
-        <View style={styles.textContainer}>
-          <RNText
-            style={externalStyles.txtXl}
-            color="primary"
-            fontWeight="bold"
-          >
-            Choose Location
-          </RNText>
-        </View>
-      </View>
+      <Header title="Choose Location" />
 
-      <RNView style={styles.searchBar}>
+      <View style={externalStyles.searchBar}>
         <Img source={choose} width={16} height={16} />
         <TextInput
+          style={externalStyles.height}
           placeholder="Search location ..."
           placeholderTextColor={colors.primary}
         />
-      </RNView>
+      </View>
 
       <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
         Saved locations
@@ -59,8 +49,12 @@ const Choose = () => {
         </RNView>
       </View>
 
-      <TouchableOpacity activeOpacity={0.7} style={styles.mapButton}>
-        <Img source={map} width={24} height={24} />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("location")}
+        activeOpacity={0.7}
+        style={styles.mapButton}
+      >
+        <Img source={map} width={21} height={21} />
         <RNText
           style={[externalStyles.txtMd, styles.mapInput]}
           fontWeight="bold"
@@ -92,12 +86,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-   
-  },
+
   location: {
     flexDirection: "row",
     alignItems: "center",
@@ -107,13 +96,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   mapButton: {
-    width: "25%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.primary,
     paddingVertical: 15,
-    //paddingHorizontal: 5,
+    paddingHorizontal: 15,
     borderRadius: 20,
     gap: 5,
     marginHorizontal: "auto",

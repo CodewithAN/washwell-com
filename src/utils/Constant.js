@@ -2,7 +2,7 @@ import { vw } from "./ScreenSize";
 
 export const URL = "https://backendcarzarr.yume.pk/api";
 export const Storage_URL = "https://backendcarzarr.yume.pk/storage/";
-export const horizantGap = 4.5 * vw;
+export const horizantGap = 5 * vw;
 export const primarBorderRadius = 8;
 export const sectionGap = 16;
 export const compGap = 16;

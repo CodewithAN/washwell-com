@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import colors, { externalStyles } from "../utils/Theme";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import colors from "../utils/Theme";
 import logo from "../../assets/images/global/logo.svg";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
@@ -8,7 +8,7 @@ import { horizantGap } from "../utils/Constant";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
 
-const Login = () => {
+const Login = ({ navigation }) => {
   return (
     <View style={styles.conainer}>
       <View>
@@ -20,11 +20,19 @@ const Login = () => {
         <TouchableOpacity style={styles.forgetButton} activeOpacity={0.7}>
           <RNText color={"primary"}>Forget Password?</RNText>
         </TouchableOpacity>
-        <Button style={styles.btn} title={"Login"} variant="gradient" />
+        <Button
+          onPress={() => navigation.navigate("enable")}
+          style={styles.btn}
+          title={"Login"}
+          variant="gradient"
+        />
       </View>
       <View style={styles.donotHaveAccount}>
         <RNText>Don't have an account?</RNText>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("sign-up")}
+          activeOpacity={0.7}
+        >
           <RNText fontWeight="semiBold" color="primary">
             Sign Up
           </RNText>

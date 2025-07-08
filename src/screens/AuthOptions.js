@@ -16,7 +16,7 @@ import RNText from "../components/ui/RNText";
 import Divider from "../components/auth/Divider";
 import AuthLayout from "../Layouts/AuthLayout";
 
-const AuthOptions = () => {
+const AuthOptions = ({ navigation }) => {
   return (
     <AuthLayout>
       <View style={styles.mainContainer}>
@@ -31,7 +31,10 @@ const AuthOptions = () => {
               <RNTextInput placeholder={"Mobile Number"} />
             </View>
           </View>
-          <Button title={"Log in"} />
+          <Button
+            onPress={() => navigation.navigate("verification")}
+            title={"Log in"}
+          />
           <Divider />
           <View style={styles.buttonContainer}>
             <Button
@@ -40,6 +43,7 @@ const AuthOptions = () => {
               title={"Log in with Google"}
             />
             <Button
+              onPress={() => navigation.navigate("login")}
               variant="white"
               source={email}
               title={"Log in with Email"}
@@ -58,7 +62,10 @@ const AuthOptions = () => {
         </View>
         <View style={styles.donotHaveAccount}>
           <RNText>Don't have an account?</RNText>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("sign-up")}
+            activeOpacity={0.7}
+          >
             <RNText fontWeight="semiBold" color="primary">
               Sign Up
             </RNText>

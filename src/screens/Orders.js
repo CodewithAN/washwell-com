@@ -4,34 +4,32 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  TextInput
+  TextInput,
 } from "react-native";
-import Header from "../components/global/Header";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
 import Img from "../components/ui/Img";
 import whatsapp from "../../assets/icons/whatsapp.svg";
 import dollar from "../../assets/icons/dollar.svg";
 import bell from "../../assets/icons/Outlined.svg";
-import {
-  horizantGap,
-  primaryHeight,
-  txtMd,
-  txtSm,
-  txtXs,
-} from "../utils/Constant";
+import back from "../../assets/icons/back.svg";
+import { horizantGap, txtMd, txtXs } from "../utils/Constant";
 import notification from "../../assets/icons/Notification.svg";
-import RNView from "../components/ui/RNView";
 import choose from "../../assets/icons/choosesearch.svg";
 import dryClean from "../../assets/icons/dry.svg";
 import Button from "../components/ui/Button";
 
-const Orders = () => {
+const Orders = ({ navigation }) => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
         <View style={styles.top}>
-          <Header />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+          >
+            <Img height={25} width={25} source={back} style={styles.menuIcon} />
+          </TouchableOpacity>
           <View style={styles.textContainer}>
             <RNText
               style={externalStyles.txtXl}
@@ -59,13 +57,13 @@ const Orders = () => {
           />
         </View>
 
-        <RNView style={styles.searchBar}>
+        <View style={externalStyles.searchBar}>
           <Img source={choose} width={16} height={16} />
           <TextInput
             placeholder="Search Orders ..."
             placeholderTextColor={colors.primary}
           />
-        </RNView>
+        </View>
 
         <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
           Today
@@ -205,7 +203,7 @@ const styles = StyleSheet.create({
   rightIcons: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 9,
   },
   notificationWrapper: {
     position: "relative",

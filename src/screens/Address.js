@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity ,TextInput} from "react-native";
+import { StyleSheet, View, TouchableOpacity, TextInput } from "react-native";
 import RNText from "../components/ui/RNText";
 import Header from "../components/global/Header";
 import colors, { externalStyles } from "../utils/Theme";
@@ -13,29 +13,17 @@ import map from "../../assets/address/map.svg";
 import borderEllipse from "../../assets/address/borderEllipse.svg";
 import mapIcon from "../../assets/icons/map.svg";
 
-const Address = () => {
+const Address = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.top}>
-        <Header />
-        <View style={styles.textContainer}>
-          <RNText
-            style={externalStyles.txtLg}
-            color="primary"
-            fontWeight="bold"
-          >
-            Address
-          </RNText>
-        </View>
-      </View>
-
-      <RNView style={styles.searchBar}>
+      <Header title="Address" />
+      <View style={externalStyles.searchBar}>
         <Img source={choose} width={16} height={16} />
         <TextInput
           placeholder="Find an Address ..."
           placeholderTextColor={colors.primary}
         />
-      </RNView>
+      </View>
 
       <View style={styles.textMiddle}>
         <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
@@ -103,7 +91,11 @@ const Address = () => {
         </RNView>
       </View>
 
-      <TouchableOpacity activeOpacity={0.7} style={styles.mapButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("location")}
+        activeOpacity={0.7}
+        style={styles.mapButton}
+      >
         <Img source={mapIcon} width={24} height={24} />
         <RNText
           style={[externalStyles.txtMd, styles.mapInput]}
