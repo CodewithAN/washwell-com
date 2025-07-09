@@ -19,13 +19,16 @@ import Payment from "../screens/Payment";
 import Card from "../screens/Card";
 import Wallet from "../screens/Wallet";
 import Location from "../screens/Location";
+import Password from "../screens/Password";
+import Otp from "../screens/Otp";
+import Reset from "../screens/Reset";
 
 const Stack = createNativeStackNavigator();
 
 const AuthStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="auth-options"
+    initialRouteName="reset"
   >
     <Stack.Screen name="auth-options" component={AuthOptions} />
     <Stack.Screen name="login" component={Login} />
@@ -47,6 +50,9 @@ const AuthStack = () => (
     <Stack.Screen name="card" component={Card} />
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
+    <Stack.Screen name="password" component={Password} />
+    <Stack.Screen name="otp" component={Otp} />
+    <Stack.Screen name="reset" component={Reset} />
   </Stack.Navigator>
 );
 
