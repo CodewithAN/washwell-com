@@ -3,14 +3,15 @@ import menu from "../../assets/icons/menu.svg";
 import whatsapp from "../../assets/icons/whatsapp.svg";
 import dollar from "../../assets/icons/dollar.svg";
 import bell from "../../assets/icons/Outlined.svg";
-import notification from "../../assets/icons/Notification.svg";
+import location from "../../assets/icons/location.svg";
 import offer from "../../assets/icons/offer.png";
 import dryClean from "../../assets/icons/dry.svg";
 import onlyPress from "../../assets/icons/Iron.svg";
 import washFold from "../../assets/icons/Laundry.svg";
 import carpets from "../../assets/icons/Yoga mat.svg";
+import curtains from "../../assets/icons/curtains.svg";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap } from "../utils/Constant";
+import { horizantGap, primarBorderRadius } from "../utils/Constant";
 import Img from "../components/ui/Img";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
@@ -35,7 +36,7 @@ const servicesData = [
     description: "Clean, fresh, and neatly folded—hassle-free washed laundry",
   },
   {
-    icon: carpets,
+    icon: [curtains, carpets],
     title: "Carpets and Curtains",
     description:
       "Deep-cleaned carpets & Revive your curtains with expert cleaning!",
@@ -66,17 +67,26 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
       <ScrollView
         style={styles.mainContainer}
         contentContainerStyle={styles.contentContainer}
       >
         {/* Location Bar */}
-        <View>
-          <Img
-            source={notification}
-            style={styles.homeImage}
-            resizeMode="contain"
-          />
+        <View style={styles.locationBar}>
+          <View style={styles.outerContainer}>
+            <View style={styles.innerContainer}>
+              <Img source={location} width={14} height={14}></Img>
+            </View>
+          </View>
+          <View>
+            <RNText style={[externalStyles.txtMd, { color: colors.white }]}>
+              Home
+            </RNText>
+            <RNText style={{ color: colors.white }}>
+              Muwaileh Park, Sharjah, UAE
+            </RNText>
+          </View>
         </View>
 
         {/* Offer Section */}
@@ -106,7 +116,23 @@ const Home = ({ navigation }) => {
           <View style={styles.serviceCards}>
             {servicesData.map((service, index) => (
               <View key={index} style={styles.serviceCard}>
-                <Img source={service.icon} style={styles.serviceIcon} />
+                {Array.isArray(service.icon) ? (
+                  <View style={styles.iconRow}>
+                    {service.icon.map((iconItem, i) => (
+                      <Img
+                        key={i}
+                        source={iconItem}
+                        style={[
+                          styles.serviceIcon,
+                          { marginRight: i === 0 ? 8 : 0 },
+                        ]}
+                      />
+                    ))}
+                  </View>
+                ) : (
+                  <Img source={service.icon} style={styles.serviceIcon} />
+                )}
+
                 <RNText style={styles.serviceTitle}>{service.title}</RNText>
                 <RNText
                   style={[styles.serviceDesc, index === 1 && styles.press]}
@@ -117,15 +143,17 @@ const Home = ({ navigation }) => {
             ))}
           </View>
         </View>
+      </ScrollView>
 
-        {/* Place Order Button */}
-
+      {/* Fixed Place Order Button */}
+      <View style={styles.fixedButtonContainer}>
         <Button
           onPress={() => navigation.navigate("cart")}
           title={"Place Order"}
           variant="gradient"
+          style={styles.fixedButton}
         />
-      </ScrollView>
+      </View>
     </>
   );
 };
@@ -140,7 +168,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 8,
-    paddingBottom: "13%",
+    paddingBottom: 100, 
     gap: 30,
   },
   notificationBar: {
@@ -176,10 +204,6 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "red",
-  },
-  homeImage: {
-    width: "100%",
-    height: 60,
   },
   offerCard: {
     position: "relative",
@@ -220,11 +244,12 @@ const styles = StyleSheet.create({
   },
   serviceCard: {
     width: "48%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     padding: 10,
     borderRadius: 10,
     marginTop: 10,
     alignItems: "start",
+    gap: 5,
   },
   serviceIcon: {
     width: 46,
@@ -234,6 +259,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textAlign: "start",
+    width: "60%",
   },
   serviceDesc: {
     fontSize: 12,
@@ -243,4 +269,41 @@ const styles = StyleSheet.create({
   press: {
     marginTop: 16,
   },
+  innerContainer: {
+    width: 24,
+    height: 24,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 15,
+  },
+  outerContainer: {
+    width: 40,
+    height: 40,
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  locationBar: {
+    backgroundColor: colors.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: primarBorderRadius,
+    gap: 10,
+    padding: 10,
+  },
+  iconRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  fixedButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    paddingHorizontal: horizantGap,
+   
+  },
+  
 });

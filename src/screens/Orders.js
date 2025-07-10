@@ -48,132 +48,138 @@ const Orders = ({ navigation }) => {
           </View>
         </View>
       </View>
-      <ScrollView>
-        <View style={styles.mainContainer}>
-          <View>
-            <Img
-              source={notification}
-              style={styles.homeImage}
-              resizeMode="contain"
-            />
-          </View>
+      <ScrollView
+        style={styles.mainContainer}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <View>
+          <Img
+            source={notification}
+            style={styles.homeImage}
+            resizeMode="contain"
+          />
+        </View>
 
-          <View style={externalStyles.searchBar}>
-            <Img source={choose} width={16} height={16} />
-            <TextInput
-              placeholder="Search Orders ..."
-              placeholderTextColor={colors.gray}
-              style={externalStyles.height}
-            />
-          </View>
+        <View style={externalStyles.searchBar}>
+          <Img source={choose} width={16} height={16} />
+          <TextInput
+            placeholder="Search Orders ..."
+            placeholderTextColor={colors.gray}
+            style={externalStyles.height}
+          />
+        </View>
 
-          <RNText fontWeight="medium" style={externalStyles.txtMd}>
-            Today
-          </RNText>
-          {/* Static Order Card for Today */}
-
-          <View style={styles.orders}>
-            {/* 1 */}
-            <View style={styles.orderCard}>
-              <View style={styles.orderTopRow}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Img source={dryClean} style={styles.orderIcon} />
-                  <View style={styles.text}>
-                    <RNText style={styles.orderTitle}>Only Dry</RNText>
-                    <RNText style={styles.orderLocation}>
-                      Muwaileh Park, Sharjah
-                    </RNText>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end", gap: 5 }}>
-                  <RNText style={styles.orderDate}>03 Jul 2025, 4:45 PM</RNText>
-                  <RNText style={styles.orderPrice}>20 AED</RNText>
+        <RNText fontWeight="medium" style={externalStyles.txtMd}>
+          Today
+        </RNText>
+        {/* Static Order Card for Today */}
+        <View style={styles.orders}>
+          {/* 1 */}
+          <View style={styles.orderCard}>
+            <View style={styles.orderTopRow}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Img source={dryClean} style={styles.orderIcon} />
+                <View style={styles.text}>
+                  <RNText style={styles.orderTitle}>Only Dry</RNText>
+                  <RNText style={styles.orderLocation}>
+                    Muwaileh Park, Sharjah
+                  </RNText>
                 </View>
               </View>
-              <View style={styles.orderBottomRow}>
-                <RNText style={styles.orderId}>Order ID: 1232856</RNText>
-                <RNText style={styles.viewMore}>View More</RNText>
+              <View style={{ alignItems: "flex-end", gap: 5 }}>
+                <RNText style={styles.orderDate}>03 Jul 2025, 4:45 PM</RNText>
+                <RNText style={styles.orderPrice}>20 AED</RNText>
               </View>
             </View>
-            {/* 2 */}
-            <View style={styles.orderCard}>
-              <View style={styles.orderTopRow}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Img source={dryClean} style={styles.orderIcon} />
-                  <View style={styles.text}>
-                    <RNText style={styles.orderTitle}>Wash & Fold</RNText>
-                    <RNText style={styles.orderLocation}>
-                      Muwaileh Park, Sharjah
-                    </RNText>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end", gap: 5 }}>
-                  <RNText style={styles.orderDate}>03 Jul 2025, 4:50 PM</RNText>
-                  <RNText style={styles.orderPrice}>30 AED</RNText>
-                </View>
-              </View>
-              <View style={styles.orderBottomRow}>
-                <RNText style={styles.orderId}>Order ID: 1232864</RNText>
-                <RNText style={styles.viewMore}>View More</RNText>
-              </View>
-            </View>
-            {/* 3 */}
-            <View style={styles.orderCard}>
-              <View style={styles.orderTopRow}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Img source={dryClean} style={styles.orderIcon} />
-                  <View style={styles.text}>
-                    <RNText style={styles.orderTitle}>Only Dry</RNText>
-                    <RNText style={styles.orderLocation}>
-                      Muwaileh Park, Sharjah
-                    </RNText>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end", gap: 5 }}>
-                  <RNText style={styles.orderDate}>03 Jul 2025, 4:55 PM</RNText>
-                  <RNText style={styles.orderPrice}>20 AED</RNText>
-                </View>
-              </View>
-              <View style={styles.orderBottomRow}>
-                <RNText style={styles.orderId}>Order ID: 1232889</RNText>
-                <RNText style={styles.viewMore}>View More</RNText>
-              </View>
+            <View style={styles.orderBottomRow}>
+              <RNText style={styles.orderId}>Order ID: 1232856</RNText>
+              <RNText style={styles.viewMore}>View More</RNText>
             </View>
           </View>
-
-          <RNText fontWeight="medium" style={externalStyles.txtMd}>
-            05 Apr 2025
-          </RNText>
-          {/* Static Order Card for 05 Apr 2025 */}
-          <View style={styles.orders}>
-            <View style={styles.orderCard}>
-              <View style={styles.orderTopRow}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Img source={dryClean} style={styles.orderIcon} />
-                  <View style={styles.text}>
-                    <RNText style={styles.orderTitle}>Wash & Fold</RNText>
-                    <RNText style={styles.orderLocation}>
-                      Muwaileh Park, Sharjah
-                    </RNText>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end", gap: 5 }}>
-                  <RNText style={styles.orderDate}>05 Apr 2025, 8:46 AM</RNText>
-                  <RNText style={styles.orderPrice}>30 AED</RNText>
+          {/* 2 */}
+          <View style={styles.orderCard}>
+            <View style={styles.orderTopRow}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Img source={dryClean} style={styles.orderIcon} />
+                <View style={styles.text}>
+                  <RNText style={styles.orderTitle}>Wash & Fold</RNText>
+                  <RNText style={styles.orderLocation}>
+                    Muwaileh Park, Sharjah
+                  </RNText>
                 </View>
               </View>
-              <View style={styles.orderBottomRow}>
-                <RNText style={styles.orderId}>Order ID: 1232890</RNText>
-                <RNText style={styles.viewMore}>View More</RNText>
+              <View style={{ alignItems: "flex-end", gap: 5 }}>
+                <RNText style={styles.orderDate}>03 Jul 2025, 4:50 PM</RNText>
+                <RNText style={styles.orderPrice}>30 AED</RNText>
               </View>
             </View>
+            <View style={styles.orderBottomRow}>
+              <RNText style={styles.orderId}>Order ID: 1232864</RNText>
+              <RNText style={styles.viewMore}>View More</RNText>
+            </View>
           </View>
+          {/* 3 */}
+          <View style={styles.orderCard}>
+            <View style={styles.orderTopRow}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Img source={dryClean} style={styles.orderIcon} />
+                <View style={styles.text}>
+                  <RNText style={styles.orderTitle}>Only Dry</RNText>
+                  <RNText style={styles.orderLocation}>
+                    Muwaileh Park, Sharjah
+                  </RNText>
+                </View>
+              </View>
+              <View style={{ alignItems: "flex-end", gap: 5 }}>
+                <RNText style={styles.orderDate}>03 Jul 2025, 4:55 PM</RNText>
+                <RNText style={styles.orderPrice}>20 AED</RNText>
+              </View>
+            </View>
+            <View style={styles.orderBottomRow}>
+              <RNText style={styles.orderId}>Order ID: 1232889</RNText>
+              <RNText style={styles.viewMore}>View More</RNText>
+            </View>
+          </View>
+        </View>
 
-          <TouchableOpacity activeOpacity={0.7}>
-            <Button title={"Place Order"} variant="gradient" />
-          </TouchableOpacity>
+        <RNText fontWeight="medium" style={externalStyles.txtMd}>
+          05 Apr 2025
+        </RNText>
+        {/* Static Order Card for 05 Apr 2025 */}
+        <View style={styles.orders}>
+          <View style={styles.orderCard}>
+            <View style={styles.orderTopRow}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Img source={dryClean} style={styles.orderIcon} />
+                <View style={styles.text}>
+                  <RNText style={styles.orderTitle}>Wash & Fold</RNText>
+                  <RNText style={styles.orderLocation}>
+                    Muwaileh Park, Sharjah
+                  </RNText>
+                </View>
+              </View>
+              <View style={{ alignItems: "flex-end", gap: 5 }}>
+                <RNText style={styles.orderDate}>05 Apr 2025, 8 ocean:46 AM</RNText>
+                <RNText style={styles.orderPrice}>30 AED</RNText>
+              </View>
+            </View>
+            <View style={styles.orderBottomRow}>
+              <RNText style={styles.orderId}>Order ID: 1232890</RNText>
+              <RNText style={styles.viewMore}>View More</RNText>
+            </View>
+          </View>
         </View>
       </ScrollView>
+
+      {/* Fixed Place Order Button */}
+       <View style={styles.fixedButtonContainer}>
+        <Button
+          onPress={() => navigation.navigate("cart")}
+          title={"Place Order"}
+          variant="gradient"
+          style={styles.fixedButton}
+        />
+      </View>
     </>
   );
 };
@@ -185,7 +191,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "13%",
+  },
+  contentContainer: {
+    paddingBottom: 100, 
     gap: 20,
   },
   top: {
@@ -271,7 +279,7 @@ const styles = StyleSheet.create({
   },
   orderDate: {
     fontSize: txtXs,
-    color: "#2829C",
+    color: "#28292C", 
   },
   orderBottomRow: {
     flexDirection: "row",
@@ -287,4 +295,13 @@ const styles = StyleSheet.create({
     fontSize: txtXs,
     textDecorationLine: "underline",
   },
+  fixedButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    paddingHorizontal: horizantGap,
+    alignItems: "center",
+  },
+
 });

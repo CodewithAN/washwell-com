@@ -20,7 +20,7 @@ const Password = () => {
       <RNText
         color="primary"
         fontWeight="medium"
-        style={[externalStyles.txtXl, { marginTop: 30 }]}
+        style={[externalStyles.txtXl]}
       >
         Forgot Password?
       </RNText>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizantGap,
     gap: 20,
     alignItems: "center",
-    paddingTop: "15%",
+    justifyContent: "center",
   },
   inputContainer: {
     flexDirection: "row",

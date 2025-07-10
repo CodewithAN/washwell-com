@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import PersonalIcon from "../../assets/menu/details.svg";
+import PersonalIcon from "../../assets/menu/detail.svg";
 import OrdersIcon from "../../assets/menu/orders.svg";
 import AddressIcon from "../../assets/menu/address.svg";
 import CardsIcon from "../../assets/menu/cards.svg";
