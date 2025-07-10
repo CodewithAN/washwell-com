@@ -1,8 +1,9 @@
 export const font = {
-  regular: "Nunito-Regular",
-  medium: "Nunito-Medium",
-  semiBold: "Nunito-SemiBold",
-  bold: "Nunito-Bold",
+  regular: "Roboto-Regular",
+  medium: "Roboto-Medium",
+  semiBold: "Roboto-SemiBold",
+  bold: "Roboto-Bold",
+  extraBold: "Roboto-ExtraBold",
 };
 
 export default font;

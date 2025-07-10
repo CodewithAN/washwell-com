@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
 import { horizantGap } from "../utils/Constant";
@@ -9,30 +9,24 @@ import Button from "../components/ui/Button";
 const Enable = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
-      <RNText
-        fontWeight="bold"
-        color="primary"
-        style={[externalStyles.txtLg, styles.heading]}
-      >
-        Enable Location
-      </RNText>
       <View style={styles.inputContainer}>
-        <RNText style={styles.text}>
-          Haier Wash collects location data to show
+        <RNText
+          fontWeight="medium"
+          color="primary"
+          style={[externalStyles.txtLg, styles.heading]}
+        >
+          Enable Location
         </RNText>
-        <RNText style={styles.text}>
-          you nearest Haier Wash zones. Allow Haier
-        </RNText>
-        <RNText style={styles.text}>
-          Wash to access this device’s location.
-        </RNText>
+        <View style={styles.textWrapper}>
+          <RNText style={styles.text}>
+            Haier Wash collects location data to show you nearest Haier Wash
+            zones. Allow Haier Wash to access this device’s location.
+          </RNText>
+        </View>
       </View>
-      <Img
-        source={enable}
-        width={372.87}
-        height={329.71}
-        style={styles.image}
-      />
+      <View style={styles.imgWrapper}>
+        <Img source={enable} style={styles.image} />
+      </View>
       <Button
         onPress={() => navigation.navigate("choose")}
         title="Turn on location"
@@ -50,28 +44,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     alignItems: "center",
-    justifyContent: "space-around",
     paddingHorizontal: horizantGap,
-    paddingVertical: "15%",
+    paddingVertical: "13%",
+    justifyContent: "space-between",
   },
   heading: {
-    marginTop: "10%",
     textAlign: "center",
   },
   inputContainer: {
-    marginTop: 15,
     alignItems: "center",
-    gap: 3,
+    gap: 12,
   },
   text: {
     textAlign: "center",
   },
+  imgWrapper: {
+    width: "100%",
+    aspectRatio: 1,
+  },
   image: {
-    marginVertical: "auto",
-    marginHorizontal: "auto",
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
   button: {
     width: "100%",
     alignSelf: "center",
+  },
+  textWrapper: {
+    width: "80%",
   },
 });

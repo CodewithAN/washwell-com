@@ -26,7 +26,7 @@ import Button from "../components/ui/Button";
 const Cart = ({ navigation }) => {
   return (
     <>
-      <Header title="Select Items" />
+      <Header space title="Select Items" />
       <ScrollView contentContainerStyle={{ flex: 1 }}>
         <View style={styles.mainContainer}>
           <View style={styles.top}>
@@ -70,7 +70,8 @@ const Cart = ({ navigation }) => {
               <Img source={choose} width={16} height={16} />
               <TextInput
                 placeholder="Search here ..."
-                placeholderTextColor={colors.primary}
+                placeholderTextColor={colors.gray}
+                style={externalStyles.input}
               />
             </View>
 
@@ -84,7 +85,7 @@ const Cart = ({ navigation }) => {
               {/* Card */}
               <View style={styles.cardContainer}>
                 <View style={styles.cardLeft}>
-                  <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+                  <RNText style={externalStyles.txtMd} fontWeight="medium">
                     T-Shirt
                   </RNText>
                 </View>
@@ -104,7 +105,7 @@ const Cart = ({ navigation }) => {
               {/* Card */}
               <View style={styles.cardContainer}>
                 <View style={styles.cardLeft}>
-                  <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+                  <RNText style={externalStyles.txtMd} fontWeight="medium">
                     Jeans
                   </RNText>
                 </View>
@@ -124,7 +125,7 @@ const Cart = ({ navigation }) => {
               {/* Card */}
               <View style={styles.cardContainer}>
                 <View style={styles.cardLeft}>
-                  <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+                  <RNText style={externalStyles.txtMd} fontWeight="medium">
                     Coat
                   </RNText>
                 </View>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "10%",
+    paddingBottom: "13%",
     paddingTop: 15,
     gap: 30,
     height: "100%",

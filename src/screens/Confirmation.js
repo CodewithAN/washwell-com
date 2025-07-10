@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "10%",
+    paddingBottom: "13%",
     gap: 20,
   },
   middleContainer: {

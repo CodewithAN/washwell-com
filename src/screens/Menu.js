@@ -37,7 +37,7 @@ const Menu = ({ navigation }) => {
 
   return (
     <>
-      <Header title="Menu" />
+      <Header space title="Menu" />
       <ScrollView contentContainerStyle={styles.mainContainer}>
         <View style={styles.header}>
           <Img source={person} style={styles.profileImage} />

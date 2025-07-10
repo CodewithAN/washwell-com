@@ -44,10 +44,7 @@ const MainNavigator = () => {
 
   return (
     <NavigationContainer>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-      <SafeAreaView style={{ flex: 1 }}>
-        {user ? <MainStack /> : <AuthStack />}
-      </SafeAreaView>
+      {user ? <MainStack /> : <AuthStack />}
       <Toast style={{ width: "100%" }} />
     </NavigationContainer>
   );

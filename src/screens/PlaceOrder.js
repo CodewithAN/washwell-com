@@ -22,13 +22,13 @@ import RNTextInput from "../components/ui/RNTextInput";
 const PlaceOrder = ({ navigation }) => {
   return (
     <>
-      <Header title="Place Order" />
+      <Header space title="Place Order" />
       <ScrollView>
         <View style={styles.mainContainer}>
           <View style={styles.deliveryDetails}>
             <RNView style={styles.topContainer}>
               <View style={styles.left}>
-                <RNText style={externalStyles.txtSm} fontWeight="semiBold">
+                <RNText style={externalStyles.txtSm} fontWeight="medium">
                   Select pick-up
                 </RNText>
                 <RNText style={externalStyles.txtSm}>6 May, 2025</RNText>
@@ -40,7 +40,7 @@ const PlaceOrder = ({ navigation }) => {
             </RNView>
             <RNView style={styles.topContainer}>
               <View style={styles.left}>
-                <RNText style={externalStyles.txtSm} fontWeight="semiBold">
+                <RNText style={externalStyles.txtSm} fontWeight="medium">
                   Select pick-up
                 </RNText>
                 <RNText style={externalStyles.txtSm}>6 May, 2025</RNText>
@@ -78,7 +78,7 @@ const PlaceOrder = ({ navigation }) => {
           </View>
 
           <View style={styles.driver}>
-            <RNText fontWeight="bold">Driver Tip</RNText>
+            <RNText fontWeight="medium">Driver Tip</RNText>
             <RNTextInput placeholder="0.00" />
 
             <View style={styles.driverTip}>
@@ -106,7 +106,7 @@ const PlaceOrder = ({ navigation }) => {
           <RNTextInput placeholder="Anything else you’d like us to know?" />
 
           <View style={styles.method}>
-            <RNText fontWeight="bold">Payment Method</RNText>
+            <RNText fontWeight="medium">Payment Method</RNText>
             <View style={styles.payment}>
               <RNView>
                 <RNText
@@ -156,7 +156,7 @@ const PlaceOrder = ({ navigation }) => {
                   />
                 </View>
                 <View>
-                  <RNText style={externalStyles.txtMd} fontWeight="bold">
+                  <RNText style={externalStyles.txtMd} fontWeight="medium">
                     VISA xxxx 8047
                   </RNText>
                   <RNText>Expires on 05/29</RNText>
@@ -177,7 +177,7 @@ const PlaceOrder = ({ navigation }) => {
           >
             <RNView style={styles.newCard}>
               <RNText
-                fontWeight="bold"
+                fontWeight="medium"
                 style={externalStyles.txtMd}
                 color="primary"
               >
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "10%",
+    paddingBottom: "13%",
     gap: 20,
     paddingTop: 10,
   },

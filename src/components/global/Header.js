@@ -6,10 +6,12 @@ import colors, { externalStyles } from "../../utils/Theme";
 import { useNavigation } from "@react-navigation/native";
 import { horizantGap } from "../../utils/Constant";
 
-const Header = ({ back = true, title = "" }) => {
+const Header = ({ back = true, title = "", space = false }) => {
   const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { paddingHorizontal: space ? horizantGap : 0 }]}
+    >
       <View style={styles.left}>
         {back && (
           <TouchableOpacity
@@ -21,7 +23,11 @@ const Header = ({ back = true, title = "" }) => {
         )}
       </View>
       <View style={styles.center}>
-        <RNText color="primary" style={externalStyles.txtLg} fontWeight="bold">
+        <RNText
+          color="primary"
+          style={externalStyles.txtLg}
+          fontWeight="medium"
+        >
           {title}
         </RNText>
       </View>
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 45,
-    paddingHorizontal: horizantGap,
+    // paddingHorizontal: horizantGap,
     backgroundColor: colors.background,
   },
   left: {

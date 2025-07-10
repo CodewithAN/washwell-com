@@ -6,6 +6,8 @@ const colors = {
   background: "#CCF5F5",
   lightBlue: "#63C5E9CC",
   white: "#ffffff",
+  black: "#000000",
+  gray: "#808080",
 };
 
 const externalStyles = StyleSheet.create({
@@ -36,6 +38,9 @@ const externalStyles = StyleSheet.create({
     paddingHorizontal: 14,
     elevation: 1,
     borderRadius: primarBorderRadius,
+  },
+  input: {
+    color: colors.black,
   },
 });
 

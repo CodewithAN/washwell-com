@@ -2,7 +2,12 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Img from "./Img";
 import RNText from "./RNText";
-import { txtSm, primarBorderRadius, primaryHeight, txtMd } from "../../utils/Constant";
+import {
+  txtSm,
+  primarBorderRadius,
+  primaryHeight,
+  txtMd,
+} from "../../utils/Constant";
 import colors from "../../utils/Theme";
 
 const Button = ({
@@ -90,7 +95,6 @@ const styles = StyleSheet.create({
   text: {
     color: "#FFF",
     fontSize: txtMd,
-    fontWeight:"bold",
   },
   whiteText: {
     color: "#000",

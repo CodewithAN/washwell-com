@@ -57,7 +57,7 @@ const AuthOptions = ({ navigation }) => {
           <Divider />
           <TouchableOpacity activeOpacity={0.7} style={styles.findAccount}>
             <Img source={search} height={15} width={15} />
-            <RNText fontWeight="bold">Find my account</RNText>
+            <RNText fontWeight="medium">Find my account</RNText>
           </TouchableOpacity>
         </View>
         <View style={styles.donotHaveAccount}>
@@ -66,7 +66,7 @@ const AuthOptions = ({ navigation }) => {
             onPress={() => navigation.navigate("sign-up")}
             activeOpacity={0.7}
           >
-            <RNText fontWeight="semiBold" color="primary">
+            <RNText fontWeight="medium" color="primary">
               Sign Up
             </RNText>
           </TouchableOpacity>

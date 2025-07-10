@@ -20,7 +20,9 @@ const Location = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
       {/* Top Section with Header and Title */}
-      <Header title="Choose Location" />
+      <View style={styles.header}>
+        <Header title="Choose Location" />
+      </View>
 
       <View style={styles.imageContainer}>
         <Img source={map} style={{ height: "100%", width: "100%" }} />
@@ -28,7 +30,8 @@ const Location = ({ navigation }) => {
           <Img source={choose} width={16} height={16} />
           <TextInput
             placeholder="Search location ..."
-            placeholderTextColor={colors.primary}
+            placeholderTextColor={colors.gray}
+            style={externalStyles.input}
           />
         </View>
 
@@ -37,7 +40,7 @@ const Location = ({ navigation }) => {
           <Img source={bookmark} width={18} height={18} />
           <RNText
             style={[externalStyles.txtMd, { color: colors.white }]}
-            fontWeight="semiBold"
+            fontWeight="medium"
           >
             Saved
           </RNText>
@@ -45,16 +48,16 @@ const Location = ({ navigation }) => {
       </View>
 
       <View style={styles.bottomContainer}>
-        <View style={{ gap: 5 }}>
+        <View style={{ gap: 0 }}>
           <View style={styles.textLocation}>
             <Img
               source={location}
-              style={{ marginTop: 3 }}
-              width={24}
-              height={24}
+              style={{ marginTop: 4 }}
+              width={23}
+              height={23}
             />
             <View>
-              <RNText style={externalStyles.txtXl} color="primary">
+              <RNText style={externalStyles.txtLg} color="primary">
                 Confirm location
               </RNText>
               <RNText>Muwaileh Park, Sharjah, UAE</RNText>
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: colors.background,
     display: "flex",
-    flexDirectiom: "column",
+    flexDirection: "column",
   },
   top: {
     flexDirection: "row",
@@ -112,7 +115,6 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: colors.white,
   },
-
   saveButton: {
     position: "absolute",
     bottom: 20,
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
   textLocation: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 10,
+    gap: 8,
   },
   orderButton: {
     paddingHorizontal: horizantGap,
@@ -139,5 +141,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 10,
     gap: 20,
+  },
+  header: {
+    paddingHorizontal: horizantGap,
   },
 });

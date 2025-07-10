@@ -18,7 +18,7 @@ import RNTextInput from "../components/ui/RNTextInput";
 const Details = () => {
   return (
     <>
-      <Header title="Personal Details" />
+      <Header space title="Personal Details" />
       <View style={styles.mainContainer}>
         <View style={styles.images}>
           <Img source={person} width={46} height={46} />
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "10%",
+    paddingBottom: "13%",
     gap: 20,
     paddingTop: 10,
   },

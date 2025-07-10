@@ -19,7 +19,7 @@ const Password = () => {
 
       <RNText
         color="primary"
-        fontWeight="bold"
+        fontWeight="medium"
         style={[externalStyles.txtXl, { marginTop: 30 }]}
       >
         Forgot Password?
@@ -39,7 +39,7 @@ const Password = () => {
 
       <Button title={"Reset password"} variant="gradient" />
 
-      <Header title="Back To Login" style={styles.link}/>
+      <Header title="Back To Login" style={styles.link} />
     </View>
   );
 };
@@ -53,12 +53,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizantGap,
     gap: 20,
     alignItems: "center",
-    paddingTop:"15%",
+    paddingTop: "15%",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
   },
- 
 });

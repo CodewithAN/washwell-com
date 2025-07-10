@@ -85,7 +85,7 @@ const SignUp = ({ navigation }) => {
               onPress={() => navigation.navigate("login")}
               activeOpacity={0.7}
             >
-              <RNText fontWeight="SemiBold" color="primary">
+              <RNText fontWeight="medium" color="primary">
                 Log in
               </RNText>
             </TouchableOpacity>

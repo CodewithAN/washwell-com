@@ -16,18 +16,21 @@ const Reset = () => {
       </View>
       <RNText
         color="primary"
-        fontWeight="bold"
+        fontWeight="medium"
         style={[externalStyles.txtXl, { marginTop: 30 }]}
       >
         Reset Password
       </RNText>
       <RNText>Enter and confirm your new password to reset it.</RNText>
-      
-        <RNTextInput placeholder={"Enter new Password"} />
-        <RNTextInput placeholder={"Confirm Password"} />
 
-        <Button title={"Reset Password"} variant="gradient" style={{marginTop:30}}/>
-      
+      <RNTextInput placeholder={"Enter new Password"} />
+      <RNTextInput placeholder={"Confirm Password"} />
+
+      <Button
+        title={"Reset Password"}
+        variant="gradient"
+        style={{ marginTop: 30 }}
+      />
     </View>
   );
 };
@@ -41,6 +44,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: horizantGap,
     gap: 15,
-    paddingTop:"15%",
+    paddingTop: "15%",
   },
 });

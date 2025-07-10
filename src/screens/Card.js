@@ -16,7 +16,7 @@ import RNTextInput from "../components/ui/RNTextInput";
 const Card = () => {
   return (
     <>
-      <Header title="Add Card" />
+      <Header space title="Add Card" />
       <ScrollView>
         <View style={styles.mainContainer}>
           <View style={styles.card}>
@@ -26,7 +26,7 @@ const Card = () => {
                   externalStyles.txtXl,
                   { color: colors.white, textAlign: "right" },
                 ]}
-                fontWeight="SemiBold"
+                fontWeight="medium"
               >
                 VISA
               </RNText>
@@ -36,25 +36,25 @@ const Card = () => {
               <View style={styles.numbers}>
                 <RNText
                   style={[externalStyles.txtXl, { color: colors.white }]}
-                  fontWeight="SemiBold"
+                  fontWeight="medium"
                 >
                   4716
                 </RNText>
                 <RNText
                   style={[externalStyles.txtXl, { color: colors.white }]}
-                  fontWeight="SemiBold"
+                  fontWeight="medium"
                 >
                   9627
                 </RNText>
                 <RNText
                   style={[externalStyles.txtXl, { color: colors.white }]}
-                  fontWeight="SemiBold"
+                  fontWeight="medium"
                 >
                   1635
                 </RNText>
                 <RNText
                   style={[externalStyles.txtXl, { color: colors.white }]}
-                  fontWeight="SemiBold"
+                  fontWeight="medium"
                 >
                   8074
                 </RNText>
@@ -107,14 +107,14 @@ const Card = () => {
             <View style={styles.tickBox}>
               <Img source={tick} width={14} height={14} style={styles.tick} />
             </View>
-            <RNText style={externalStyles.txtMd} fontWeight="SemiBold">
+            <RNText style={externalStyles.txtMd} fontWeight="medium">
               Save Card
             </RNText>
           </View>
 
           <View style={{ gap: 5 }}>
             <View>
-              <RNText style={externalStyles.txtMd} fontWeight="SemiBold">
+              <RNText style={externalStyles.txtMd} fontWeight="medium">
                 Saved Cards
               </RNText>
               <RNText style={externalStyles.txtXs}>
@@ -134,7 +134,7 @@ const Card = () => {
                     />
                   </View>
                   <View>
-                    <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+                    <RNText style={externalStyles.txtMd} fontWeight="medium">
                       VISA xxxx 8047
                     </RNText>
                     <RNText>Expires on 05/29</RNText>
@@ -161,7 +161,7 @@ const Card = () => {
                     />
                   </View>
                   <View>
-                    <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+                    <RNText style={externalStyles.txtMd} fontWeight="medium">
                       Mastercard xxxx 9878
                     </RNText>
                     <RNText>Expires on 26/32</RNText>

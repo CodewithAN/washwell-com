@@ -21,157 +21,160 @@ import Button from "../components/ui/Button";
 
 const Orders = ({ navigation }) => {
   return (
-    <ScrollView>
-      <View style={styles.mainContainer}>
-        <View style={styles.top}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <Img height={25} width={25} source={back} style={styles.menuIcon} />
-          </TouchableOpacity>
-          <View style={styles.textContainer}>
-            <RNText
-              style={externalStyles.txtXl}
-              color="primary"
-              fontWeight="bold"
-            >
-              Orders
-            </RNText>
-          </View>
-          <View style={styles.rightIcons}>
-            <Img source={whatsapp} style={styles.notificationIcon} />
-            <Img source={dollar} style={styles.notificationIcon} />
-            <View style={styles.notificationWrapper}>
-              <Img source={bell} style={styles.notificationIcon} />
-              <View style={styles.notificationDot} />
-            </View>
-          </View>
-        </View>
-
-        <View>
-          <Img
-            source={notification}
-            style={styles.homeImage}
-            resizeMode="contain"
-          />
-        </View>
-
-        <View style={externalStyles.searchBar}>
-          <Img source={choose} width={16} height={16} />
-          <TextInput
-            placeholder="Search Orders ..."
-            placeholderTextColor={colors.primary}
-          />
-        </View>
-
-        <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
-          Today
-        </RNText>
-        {/* Static Order Card for Today */}
-
-        <View style={styles.orders}>
-          {/* 1 */}
-          <View style={styles.orderCard}>
-            <View style={styles.orderTopRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Img source={dryClean} style={styles.orderIcon} />
-                <View style={styles.text}>
-                  <RNText style={styles.orderTitle}>Only Dry</RNText>
-                  <RNText style={styles.orderLocation}>
-                    Muwaileh Park, Sharjah
-                  </RNText>
-                </View>
-              </View>
-              <View style={{ alignItems: "flex-end", gap: 5 }}>
-                <RNText style={styles.orderDate}>03 Jul 2025, 4:45 PM</RNText>
-                <RNText style={styles.orderPrice}>20 AED</RNText>
-              </View>
-            </View>
-            <View style={styles.orderBottomRow}>
-              <RNText style={styles.orderId}>Order ID: 1232856</RNText>
-              <RNText style={styles.viewMore}>View More</RNText>
-            </View>
-          </View>
-          {/* 2 */}
-          <View style={styles.orderCard}>
-            <View style={styles.orderTopRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Img source={dryClean} style={styles.orderIcon} />
-                <View style={styles.text}>
-                  <RNText style={styles.orderTitle}>Wash & Fold</RNText>
-                  <RNText style={styles.orderLocation}>
-                    Muwaileh Park, Sharjah
-                  </RNText>
-                </View>
-              </View>
-              <View style={{ alignItems: "flex-end", gap: 5 }}>
-                <RNText style={styles.orderDate}>03 Jul 2025, 4:50 PM</RNText>
-                <RNText style={styles.orderPrice}>30 AED</RNText>
-              </View>
-            </View>
-            <View style={styles.orderBottomRow}>
-              <RNText style={styles.orderId}>Order ID: 1232864</RNText>
-              <RNText style={styles.viewMore}>View More</RNText>
-            </View>
-          </View>
-          {/* 3 */}
-          <View style={styles.orderCard}>
-            <View style={styles.orderTopRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Img source={dryClean} style={styles.orderIcon} />
-                <View style={styles.text}>
-                  <RNText style={styles.orderTitle}>Only Dry</RNText>
-                  <RNText style={styles.orderLocation}>
-                    Muwaileh Park, Sharjah
-                  </RNText>
-                </View>
-              </View>
-              <View style={{ alignItems: "flex-end", gap: 5 }}>
-                <RNText style={styles.orderDate}>03 Jul 2025, 4:55 PM</RNText>
-                <RNText style={styles.orderPrice}>20 AED</RNText>
-              </View>
-            </View>
-            <View style={styles.orderBottomRow}>
-              <RNText style={styles.orderId}>Order ID: 1232889</RNText>
-              <RNText style={styles.viewMore}>View More</RNText>
-            </View>
-          </View>
-        </View>
-
-        <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
-          05 Apr 2025
-        </RNText>
-        {/* Static Order Card for 05 Apr 2025 */}
-        <View style={styles.orders}>
-          <View style={styles.orderCard}>
-            <View style={styles.orderTopRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Img source={dryClean} style={styles.orderIcon} />
-                <View style={styles.text}>
-                  <RNText style={styles.orderTitle}>Wash & Fold</RNText>
-                  <RNText style={styles.orderLocation}>
-                    Muwaileh Park, Sharjah
-                  </RNText>
-                </View>
-              </View>
-              <View style={{ alignItems: "flex-end", gap: 5 }}>
-                <RNText style={styles.orderDate}>05 Apr 2025, 8:46 AM</RNText>
-                <RNText style={styles.orderPrice}>30 AED</RNText>
-              </View>
-            </View>
-            <View style={styles.orderBottomRow}>
-              <RNText style={styles.orderId}>Order ID: 1232890</RNText>
-              <RNText style={styles.viewMore}>View More</RNText>
-            </View>
-          </View>
-        </View>
-
-        <TouchableOpacity activeOpacity={0.7}>
-          <Button title={"Place Order"} variant="gradient" />
+    <>
+      <View style={styles.top}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          style={{ flex: 0.33 }}
+        >
+          <Img height={25} width={25} source={back} style={styles.menuIcon} />
         </TouchableOpacity>
+        <View style={styles.textContainer}>
+          <RNText
+            style={externalStyles.txtXl}
+            color="primary"
+            fontWeight="bold"
+          >
+            Orders
+          </RNText>
+        </View>
+        <View style={styles.rightIcons}>
+          <Img source={whatsapp} style={{ height: 24, width: 24 }} />
+          <Img source={dollar} style={styles.notificationIcon} />
+          <View style={styles.notificationWrapper}>
+            <Img source={bell} style={styles.notificationIcon} />
+            <View style={styles.notificationDot} />
+          </View>
+        </View>
       </View>
-    </ScrollView>
+      <ScrollView>
+        <View style={styles.mainContainer}>
+          <View>
+            <Img
+              source={notification}
+              style={styles.homeImage}
+              resizeMode="contain"
+            />
+          </View>
+
+          <View style={externalStyles.searchBar}>
+            <Img source={choose} width={16} height={16} />
+            <TextInput
+              placeholder="Search Orders ..."
+              placeholderTextColor={colors.gray}
+              style={externalStyles.height}
+            />
+          </View>
+
+          <RNText fontWeight="medium" style={externalStyles.txtMd}>
+            Today
+          </RNText>
+          {/* Static Order Card for Today */}
+
+          <View style={styles.orders}>
+            {/* 1 */}
+            <View style={styles.orderCard}>
+              <View style={styles.orderTopRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Img source={dryClean} style={styles.orderIcon} />
+                  <View style={styles.text}>
+                    <RNText style={styles.orderTitle}>Only Dry</RNText>
+                    <RNText style={styles.orderLocation}>
+                      Muwaileh Park, Sharjah
+                    </RNText>
+                  </View>
+                </View>
+                <View style={{ alignItems: "flex-end", gap: 5 }}>
+                  <RNText style={styles.orderDate}>03 Jul 2025, 4:45 PM</RNText>
+                  <RNText style={styles.orderPrice}>20 AED</RNText>
+                </View>
+              </View>
+              <View style={styles.orderBottomRow}>
+                <RNText style={styles.orderId}>Order ID: 1232856</RNText>
+                <RNText style={styles.viewMore}>View More</RNText>
+              </View>
+            </View>
+            {/* 2 */}
+            <View style={styles.orderCard}>
+              <View style={styles.orderTopRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Img source={dryClean} style={styles.orderIcon} />
+                  <View style={styles.text}>
+                    <RNText style={styles.orderTitle}>Wash & Fold</RNText>
+                    <RNText style={styles.orderLocation}>
+                      Muwaileh Park, Sharjah
+                    </RNText>
+                  </View>
+                </View>
+                <View style={{ alignItems: "flex-end", gap: 5 }}>
+                  <RNText style={styles.orderDate}>03 Jul 2025, 4:50 PM</RNText>
+                  <RNText style={styles.orderPrice}>30 AED</RNText>
+                </View>
+              </View>
+              <View style={styles.orderBottomRow}>
+                <RNText style={styles.orderId}>Order ID: 1232864</RNText>
+                <RNText style={styles.viewMore}>View More</RNText>
+              </View>
+            </View>
+            {/* 3 */}
+            <View style={styles.orderCard}>
+              <View style={styles.orderTopRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Img source={dryClean} style={styles.orderIcon} />
+                  <View style={styles.text}>
+                    <RNText style={styles.orderTitle}>Only Dry</RNText>
+                    <RNText style={styles.orderLocation}>
+                      Muwaileh Park, Sharjah
+                    </RNText>
+                  </View>
+                </View>
+                <View style={{ alignItems: "flex-end", gap: 5 }}>
+                  <RNText style={styles.orderDate}>03 Jul 2025, 4:55 PM</RNText>
+                  <RNText style={styles.orderPrice}>20 AED</RNText>
+                </View>
+              </View>
+              <View style={styles.orderBottomRow}>
+                <RNText style={styles.orderId}>Order ID: 1232889</RNText>
+                <RNText style={styles.viewMore}>View More</RNText>
+              </View>
+            </View>
+          </View>
+
+          <RNText fontWeight="medium" style={externalStyles.txtMd}>
+            05 Apr 2025
+          </RNText>
+          {/* Static Order Card for 05 Apr 2025 */}
+          <View style={styles.orders}>
+            <View style={styles.orderCard}>
+              <View style={styles.orderTopRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Img source={dryClean} style={styles.orderIcon} />
+                  <View style={styles.text}>
+                    <RNText style={styles.orderTitle}>Wash & Fold</RNText>
+                    <RNText style={styles.orderLocation}>
+                      Muwaileh Park, Sharjah
+                    </RNText>
+                  </View>
+                </View>
+                <View style={{ alignItems: "flex-end", gap: 5 }}>
+                  <RNText style={styles.orderDate}>05 Apr 2025, 8:46 AM</RNText>
+                  <RNText style={styles.orderPrice}>30 AED</RNText>
+                </View>
+              </View>
+              <View style={styles.orderBottomRow}>
+                <RNText style={styles.orderId}>Order ID: 1232890</RNText>
+                <RNText style={styles.viewMore}>View More</RNText>
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity activeOpacity={0.7}>
+            <Button title={"Place Order"} variant="gradient" />
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -182,19 +185,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "10%",
+    paddingBottom: "13%",
     gap: 20,
   },
   top: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: horizantGap,
+    height: 45,
+    backgroundColor: colors.background,
   },
   textContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 20,
   },
   notificationIcon: {
     width: 22,
@@ -204,6 +209,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 9,
+    flex: 0.33,
+    justifyContent: "flex-end",
   },
   notificationWrapper: {
     position: "relative",
@@ -220,6 +227,7 @@ const styles = StyleSheet.create({
   homeImage: {
     width: "100%",
     height: 60,
+    marginTop: 10,
   },
   searchBar: {
     flexDirection: "row",

@@ -9,13 +9,13 @@ import refer from "../../assets/reference/refer.svg";
 const Reference = () => {
   return (
     <>
-      <Header title="Refer a friend" />
+      <Header space title="Refer a friend" />
       <View style={styles.mainContainer}>
         <View style={{ gap: 5 }}>
           <RNText
             style={externalStyles.txtLg}
             color="primary"
-            fontWeight="bold"
+            fontWeight="medium"
           >
             Referral Code
           </RNText>

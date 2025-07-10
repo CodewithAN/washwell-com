@@ -21,12 +21,13 @@ const Address = ({ navigation }) => {
         <Img source={choose} width={16} height={16} />
         <TextInput
           placeholder="Find an Address ..."
-          placeholderTextColor={colors.primary}
+          placeholderTextColor={colors.gray}
+          style={externalStyles.input}
         />
       </View>
 
       <View style={styles.textMiddle}>
-        <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
+        <RNText fontWeight="medium" style={externalStyles.txtMd}>
           Saved addresses
         </RNText>
         <View style={styles.add}>
@@ -51,7 +52,7 @@ const Address = ({ navigation }) => {
                 style={styles.inner}
               />
             </View>
-            <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+            <RNText style={externalStyles.txtMd} fontWeight="medium">
               Office
             </RNText>
           </View>
@@ -76,7 +77,7 @@ const Address = ({ navigation }) => {
               />
               <Img source={home} width={25} height={20} style={styles.inner} />
             </View>
-            <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+            <RNText style={externalStyles.txtMd} fontWeight="medium">
               Home
             </RNText>
           </View>
@@ -99,7 +100,7 @@ const Address = ({ navigation }) => {
         <Img source={mapIcon} width={24} height={24} />
         <RNText
           style={[externalStyles.txtMd, styles.mapInput]}
-          fontWeight="bold"
+          fontWeight="regular"
         >
           Map
         </RNText>

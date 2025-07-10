@@ -1,4 +1,10 @@
-import { StyleSheet, View, TouchableOpacity, TextInput } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TextInput,
+  SafeAreaView,
+} from "react-native";
 import Header from "../components/global/Header";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
@@ -12,19 +18,19 @@ import map from "../../assets/icons/map.svg";
 
 const Choose = ({ navigation }) => {
   return (
-    <View style={styles.mainContainer}>
+    <SafeAreaView style={styles.mainContainer}>
       <Header title="Choose Location" />
 
       <View style={externalStyles.searchBar}>
         <Img source={choose} width={16} height={16} />
         <TextInput
-          style={externalStyles.height}
           placeholder="Search location ..."
-          placeholderTextColor={colors.primary}
+          placeholderTextColor={colors.gray}
+          style={externalStyles.input}
         />
       </View>
 
-      <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
+      <RNText fontWeight="medium" style={externalStyles.txtMd}>
         Saved locations
       </RNText>
 
@@ -32,7 +38,7 @@ const Choose = ({ navigation }) => {
         <RNView style={styles.location}>
           <Img source={work} width={24} height={24} />
           <View>
-            <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
+            <RNText fontWeight="regular" style={externalStyles.txtMd}>
               WorkPlace
             </RNText>
             <RNText style={[externalStyles.txtXs, styles.text]}>Sharjah</RNText>
@@ -41,7 +47,7 @@ const Choose = ({ navigation }) => {
         <RNView style={styles.location}>
           <Img source={home} width={24} height={24} />
           <View>
-            <RNText fontWeight="semiBold" style={externalStyles.txtMd}>
+            <RNText fontWeight="regular" style={externalStyles.txtMd}>
               Home
             </RNText>
             <RNText style={[externalStyles.txtXs, styles.text]}>Ajman</RNText>
@@ -57,12 +63,12 @@ const Choose = ({ navigation }) => {
         <Img source={map} width={21} height={21} />
         <RNText
           style={[externalStyles.txtMd, styles.mapInput]}
-          fontWeight="bold"
+          fontWeight="regular"
         >
           Map
         </RNText>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "15%",
+    paddingBottom: "13%",
     gap: 15,
   },
   top: {

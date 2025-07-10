@@ -19,7 +19,7 @@ const Verification = ({ navigation }) => {
       <View style={styles.container}>
         <RNText
           color="primary"
-          fontWeight="bold"
+          fontWeight="medium"
           style={[externalStyles.txtLg, styles.otpText]}
         >
           Enter OTP
@@ -44,7 +44,7 @@ const Verification = ({ navigation }) => {
         <View style={styles.recieveOTP}>
           <RNText>Did not receive OTP? </RNText>
           <TouchableOpacity activeOpacity={0.7}>
-            <RNText fontWeight="SemiBold" color="primary">
+            <RNText fontWeight="medium" color="primary">
               Resend OTP
             </RNText>
           </TouchableOpacity>
@@ -53,9 +53,9 @@ const Verification = ({ navigation }) => {
 
       {/* Move haveAccount to the bottom */}
       <View style={styles.haveAccount}>
-        <RNText>have an account?</RNText>
+        <RNText>Have an account?</RNText>
         <TouchableOpacity activeOpacity={0.7}>
-          <RNText fontWeight="SemiBold" color="primary">
+          <RNText fontWeight="medium" color="primary">
             {" "}
             Log in
           </RNText>

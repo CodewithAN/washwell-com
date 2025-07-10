@@ -24,7 +24,7 @@ const Notifications = () => {
           </View>
 
           <RNText
-            fontWeight="semiBold"
+            fontWeight="medium"
             style={[externalStyles.txtMd, styles.header]}
           >
             Today
@@ -34,7 +34,7 @@ const Notifications = () => {
               <View style={styles.iconContainer}>
                 <Img source={checkmark} style={styles.icon} />
               </View>
-              <RNText fontWeight="semiBold" style={styles.notificationText}>
+              <RNText fontWeight="medium" style={styles.notificationText}>
                 Shahid, your laundry is done!
               </RNText>
             </View>
@@ -66,7 +66,7 @@ const Notifications = () => {
           </View>
 
           <RNText
-            fontWeight="semiBold"
+            fontWeight="medium"
             style={[externalStyles.txtMd, styles.header]}
           >
             06 Oct 2023

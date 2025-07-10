@@ -54,7 +54,7 @@ const Home = ({ navigation }) => {
           <Img source={menu} style={styles.menuIcon} />
         </TouchableOpacity>
         <View style={styles.rightIcons}>
-          <Img source={whatsapp} style={styles.notificationIcon} />
+          <Img source={whatsapp} style={{ height: 24, width: 24 }} />
           <Img source={dollar} style={styles.notificationIcon} />
           <TouchableOpacity
             activeOpacity={0.7}
@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
 
         {/* Offer Section */}
         <View style={styles.offers}>
-          <RNText style={externalStyles.txtMd} fontWeight="bold">
+          <RNText style={externalStyles.txtMd} fontWeight="medium">
             Latest Offers
           </RNText>
           <View style={styles.offerCard}>
@@ -99,7 +99,7 @@ const Home = ({ navigation }) => {
         <View style={styles.services}>
           <RNText
             style={[externalStyles.txtMd, styles.servicesText]}
-            fontWeight="bold"
+            fontWeight="medium"
           >
             What do you want to get done today?
           </RNText>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 8,
-    paddingBottom: "15%",
+    paddingBottom: "13%",
     gap: 30,
   },
   notificationBar: {

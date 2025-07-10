@@ -22,7 +22,7 @@ const Wallet = () => {
               <Img source={person} width={30} height={30} />
               <RNText
                 style={[externalStyles.txtLg, { color: colors.white }]}
-                fontWeight="bold"
+                fontWeight="medium"
               >
                 Hello, Shahid
               </RNText>
@@ -80,7 +80,7 @@ const Wallet = () => {
             </View>
             <View>
               <RNText>Total Earned</RNText>
-              <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+              <RNText style={externalStyles.txtMd} fontWeight="medium">
                 3,275 AED
               </RNText>
             </View>
@@ -109,7 +109,7 @@ const Wallet = () => {
             </View>
             <View>
               <RNText>Total Spent</RNText>
-              <RNText style={externalStyles.txtMd} fontWeight="semiBold">
+              <RNText style={externalStyles.txtMd} fontWeight="medium">
                 3,275 AED
               </RNText>
             </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 20,
     backgroundColor: colors.background,
-    paddingBottom: "15%",
+    paddingBottom: "13%",
   },
   header: {
     backgroundColor: colors.primary,

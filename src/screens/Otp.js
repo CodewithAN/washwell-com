@@ -11,33 +11,35 @@ import Button from "../components/ui/Button";
 
 const Otp = () => {
   return (
-    <View style={styles.mainContainer}>
-      <Header />
-      <View>
-        <Img source={logo} width={60 * vw} height={70} />
-      </View>
-      <View style={styles.container}>
-        <RNText
-          color="primary"
-          fontWeight="bold"
-          style={[externalStyles.txtLg, styles.otpText]}
-        >
-          Verify OTP
-        </RNText>
-        <RNText style={styles.plainText}>
-          Enter the OTP sent to your email to verify your account
-        </RNText>
-
-        <View style={styles.inputContainer}>
-          <RNTextInput />
-          <RNTextInput />
-          <RNTextInput />
-          <RNTextInput />
+    <>
+      <Header space />
+      <View style={styles.mainContainer}>
+        <View>
+          <Img source={logo} width={60 * vw} height={70} />
         </View>
+        <View style={styles.container}>
+          <RNText
+            color="primary"
+            fontWeight="medium"
+            style={[externalStyles.txtLg, styles.otpText]}
+          >
+            Verify OTP
+          </RNText>
+          <RNText style={styles.plainText}>
+            Enter the OTP sent to your email to verify your account
+          </RNText>
 
-        <Button title={"Verify"} variant="gradient" />
+          <View style={styles.inputContainer}>
+            <RNTextInput />
+            <RNTextInput />
+            <RNTextInput />
+            <RNTextInput />
+          </View>
+
+          <Button title={"Verify"} variant="gradient" />
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
