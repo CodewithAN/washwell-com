@@ -4,7 +4,7 @@ import logo from "../../assets/images/global/logo.svg";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import RNTextInput from "../components/ui/RNTextInput";
-import { horizantGap } from "../utils/Constant";
+import { API_URL, horizantGap } from "../utils/Constant";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
 import React, { useState } from "react";
@@ -13,8 +13,13 @@ import * as Yup from "yup";
 import axios from "axios";
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string().trim().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+  email: Yup.string()
+    .trim()
+    .email("Invalid email")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
 const Login = ({ navigation }) => {
@@ -34,7 +39,7 @@ const Login = ({ navigation }) => {
       console.log("Submitting formData:", formData);
       await loginSchema.validate(formData, { abortEarly: false });
 
-      const response = await axios.post("https://stagging.washwell.ae/api/login", formData);
+      const response = await axios.post(`${API_URL}/login`, formData);
 
       Toast.show({
         type: "success",
@@ -97,7 +102,10 @@ const Login = ({ navigation }) => {
       </View>
       <View style={styles.donotHaveAccount}>
         <RNText>Don't have an account?</RNText>
-        <TouchableOpacity onPress={() => navigation.navigate("sign-up")} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("sign-up")}
+          activeOpacity={0.7}
+        >
           <RNText fontWeight="medium" color="primary">
             Sign Up
           </RNText>

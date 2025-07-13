@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
 import { externalStyles } from "../utils/Theme";
-import { horizantGap, primaryHeight } from "../utils/Constant";
+import { API_URL, horizantGap, primaryHeight } from "../utils/Constant";
 import Img from "../components/ui/Img";
 import logo from "../../assets/images/global/logo.svg";
 import { vw } from "../utils/ScreenSize";
@@ -30,7 +30,6 @@ const AuthOptions = ({ navigation }) => {
   const [formData, setFormData] = useState({
     phone_number: "",
   });
-  const [useNativeInput, setUseNativeInput] = useState(false);
   const phoneInputRef = useRef(formData.phone_number);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const AuthOptions = ({ navigation }) => {
     console.log("Raw Event Bytes:", new TextEncoder().encode(value));
     const cleanedValue = String(value)
       .replace(/[^\x30-\x39]/g, "")
-      .slice(0, 9);
+      .slice(0, 20);
     const newFormData = { ...formData, [name]: cleanedValue };
     setFormData(newFormData);
     phoneInputRef.current = cleanedValue;
@@ -61,8 +60,14 @@ const AuthOptions = ({ navigation }) => {
       console.log("Validation Input:", formData.phone_number);
       console.log("Validation Input Type:", typeof formData.phone_number);
       console.log("Validation Input Length:", formData.phone_number.length);
-      console.log("Validation Input Characters:", JSON.stringify(formData.phone_number));
-      console.log("Validation Input Bytes:", new TextEncoder().encode(formData.phone_number));
+      console.log(
+        "Validation Input Characters:",
+        JSON.stringify(formData.phone_number)
+      );
+      console.log(
+        "Validation Input Bytes:",
+        new TextEncoder().encode(formData.phone_number)
+      );
       const isValid = /^(05\d{7})$/.test(formData.phone_number);
       console.log("Pre-validation Regex Test:", isValid);
       await phoneSchema.validate(formData, { abortEarly: false });
@@ -70,10 +75,7 @@ const AuthOptions = ({ navigation }) => {
       const payload = { phone_number: `+971${formData.phone_number}` };
       console.log("API Payload:", payload);
 
-      const response = await axios.post(
-        "https://stagging.washwell.ae/api/login-with-phone",
-        payload
-      );
+      const response = await axios.post(`${API_URL}/login-with-phone`, payload);
       console.log("API Success:", response.data);
 
       Toast.show({
@@ -83,7 +85,9 @@ const AuthOptions = ({ navigation }) => {
       });
 
       // Pass phone number to verification screen
-      navigation.navigate("verification", { phone_number: `+971${formData.phone_number}` });
+      navigation.navigate("verification", {
+        phone_number: `+971${formData.phone_number}`,
+      });
       console.log("API Response:", response.data);
     } catch (error) {
       console.log("Error:", error);
@@ -107,8 +111,13 @@ const AuthOptions = ({ navigation }) => {
           text2: errorMessages,
         });
         // If "User not found", still navigate to verification to request OTP
-        if (error.response?.data?.message === "User not found with this phone number") {
-          navigation.navigate("verification", { phone_number: `+971${formData.phone_number}` });
+        if (
+          error.response?.data?.message ===
+          "User not found with this phone number"
+        ) {
+          navigation.navigate("verification", {
+            phone_number: `+971${formData.phone_number}`,
+          });
         }
       }
     }
@@ -125,30 +134,17 @@ const AuthOptions = ({ navigation }) => {
               <RNText style={externalStyles.txtSm}>+971</RNText>
             </RNView>
             <View style={styles.input}>
-              {useNativeInput ? (
-                <TextInput
-                  value={formData.phone_number}
-                  onChangeText={(text) => handleChange("phone_number", text)}
-                  placeholder="Mobile Number"
-                  keyboardType="numeric"
-                  maxLength={9}
-                  style={styles.nativeInput}
-                />
-              ) : (
-                <RNTextInput
-                  value={formData.phone_number}
-                  onChangeText={(text) => handleChange("phone_number", text)}
-                  placeholder="Mobile Number"
-                  keyboardType="numeric"
-                  maxLength={9}
-                />
-              )}
+              <RNTextInput
+                value={formData.phone_number}
+                onChangeText={(text) => handleChange("phone_number", text)}
+                placeholder="Mobile Number"
+                keyboardType="numeric"
+                maxLength={9}
+              />
             </View>
           </View>
           <Button onPress={handleSubmit} title="Log in" />
-          <TouchableOpacity onPress={() => setUseNativeInput(!useNativeInput)}>
-            <RNText>Toggle Input: {useNativeInput ? "Native" : "RNTextInput"}</RNText>
-          </TouchableOpacity>
+
           <Divider />
           <View style={styles.buttonContainer}>
             <Button
@@ -162,11 +158,7 @@ const AuthOptions = ({ navigation }) => {
               source={email}
               title="Log in with Email"
             />
-            <Button
-              variant="white"
-              source={apple}
-              title="Log in with Apple"
-            />
+            <Button variant="white" source={apple} title="Log in with Apple" />
           </View>
           <Divider />
           <TouchableOpacity activeOpacity={0.7} style={styles.findAccount}>

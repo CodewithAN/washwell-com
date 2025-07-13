@@ -1,7 +1,7 @@
 import { vw } from "./ScreenSize";
 
-export const URL = "https://backendcarzarr.yume.pk/api";
-export const Storage_URL = "https://backendcarzarr.yume.pk/storage/";
+export const API_URL = "https://stagging.washwell.ae/api";
+export const Storage_URL = "https://stagging.washwell.ae/storage/";
 export const horizantGap = 5 * vw;
 export const primarBorderRadius = 8;
 export const sectionGap = 16;
