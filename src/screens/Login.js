@@ -24,49 +24,48 @@ const loginSchema = Yup.object().shape({
 
 const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
   const handleChange = (name, value) => {
-    setFormData((prev) => {
-      const newFormData = { ...prev, [name]: value.trim() };
-      console.log("Field:", name, "Value:", value);
-      console.log("Updated formData:", newFormData);
-      return newFormData;
-    });
+    setFormData((prev) => ({ ...prev, [name]: value.trim() }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); 
   };
 
   const handleLogin = async () => {
     try {
-      console.log("Submitting formData:", formData);
       await loginSchema.validate(formData, { abortEarly: false });
-
       const response = await axios.post(`${API_URL}/login`, formData);
 
       Toast.show({
         type: "success",
-        text1: "Login Successful",
-        text2: "Welcome back!",
+        text1: "Success",
+        text2: "Welcome back! Login successful.",
       });
 
       navigation.navigate("enable");
-      console.log("API Response:", response.data);
     } catch (error) {
-      console.log("Error:", error);
-      console.log("Error Details:", error.message, error.errors);
-      console.log("API Error Response:", error?.response?.data);
       if (error.name === "ValidationError") {
+        const newErrors = { email: "", password: "" };
+        error.inner.forEach((err) => {
+          newErrors[err.path] = err.message;
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Validation Error",
-          text2: error.errors.join(", "),
+          text2: error.inner.map((err) => err.message).join(", "),
         });
       } else {
-        const errorMessages = error.response?.data?.errors
-          ? Object.values(error.response.data.errors).flat().join(", ")
-          : error.response?.data?.message || "Invalid credentials";
+        const backendErrors = error.response?.data?.errors || {};
+        const newErrors = { email: "", password: "" };
+        Object.entries(backendErrors).forEach(([key, messages]) => {
+          newErrors[key] = messages.join(", ");
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Login Failed",
-          text2: errorMessages,
+          text2: error.response?.data?.message || "Invalid credentials",
         });
       }
     }
@@ -78,25 +77,31 @@ const Login = ({ navigation }) => {
         <Img source={logo} width={60 * vw} height={70} />
       </View>
       <View style={styles.inputContainer}>
-        <RNTextInput
-          placeholder={"Email"}
-          value={formData.email}
-          onChangeText={(text) => handleChange("email", text)}
-          keyboardType="email-address"
-        />
-        <RNTextInput
-          placeholder={"Password"}
-          secureTextEntry
-          value={formData.password}
-          onChangeText={(text) => handleChange("password", text)}
-        />
+        <View>
+          <RNTextInput
+            placeholder="Email"
+            value={formData.email}
+            onChangeText={(text) => handleChange("email", text)}
+            keyboardType="email-address"
+          />
+          {errors.email && <RNText style={styles.error}>{errors.email}</RNText>}
+        </View>
+        <View>
+          <RNTextInput
+            placeholder="Password"
+            secureTextEntry
+            value={formData.password}
+            onChangeText={(text) => handleChange("password", text)}
+          />
+          {errors.password && <RNText style={styles.error}>{errors.password}</RNText>}
+        </View>
         <TouchableOpacity style={styles.forgetButton} activeOpacity={0.7}>
-          <RNText color={"primary"}>Forget Password?</RNText>
+          <RNText color="primary">Forget Password?</RNText>
         </TouchableOpacity>
         <Button
           onPress={handleLogin}
           style={styles.btn}
-          title={"Login"}
+          title="Login"
           variant="gradient"
         />
       </View>
@@ -142,5 +147,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     marginTop: 7,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });

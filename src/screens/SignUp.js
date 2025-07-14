@@ -1,3 +1,4 @@
+
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
 import logo from "../../assets/images/global/logo.svg";
@@ -14,10 +15,12 @@ import Divider from "../components/auth/Divider";
 import RNTextInput from "../components/ui/RNTextInput";
 import RNView from "../components/ui/RNView";
 import RNText from "../components/ui/RNText";
-import React, { useState, useRef } from "react";
+import React, { useState, useContext } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
+import { API_URL } from "../utils/Constant";
+import { ContextProvider } from "../global/Context";
 
 const registerSchema = Yup.object().shape({
   name: Yup.string().trim().required("Name is required"),
@@ -27,12 +30,13 @@ const registerSchema = Yup.object().shape({
     .oneOf([Yup.ref("password")], "Passwords do not match")
     .required("Confirm password is required"),
   phone_number: Yup.string()
-    .matches(/^(05\d{7})$/, "Phone number must start with 05 and be 9 digits")
+    .matches(/^\+\d{4,14}$/, "Phone number must start with + and have 4-14 digits")
     .required("Phone number is required"),
   referred_by: Yup.string().trim().optional(),
 });
 
 const SignUp = ({ navigation }) => {
+  const { setPhoneNumber } = useContext(ContextProvider);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,66 +45,50 @@ const SignUp = ({ navigation }) => {
     referred_by: "",
     phone_number: "",
   });
-  const phoneInputRef = useRef(formData.phone_number);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (name, value) => {
-    const cleanedValue = name === "phone_number" ? value.replace(/[^\x30-\x39]/g, "").slice(0, 9) : value.trim();
-    setFormData((prev) => {
-      const newFormData = { ...prev, [name]: cleanedValue };
-      if (name === "phone_number") {
-        phoneInputRef.current = cleanedValue;
-      }
-      console.log("Field:", name, "Value:", cleanedValue);
-      console.log("Updated formData:", newFormData);
-      return newFormData;
-    });
+    setFormData((prev) => ({ ...prev, [name]: name === "phone_number" ? value : value.trim() }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleRegister = async () => {
     try {
-      console.log("Submitting formData:", formData);
-      console.log("Phone Input (ref):", phoneInputRef.current);
       await registerSchema.validate(formData, { abortEarly: false });
+      await axios.post(`${API_URL}/register`, formData);
 
-      const payload = {
-        ...formData,
-        phone_number: `+971${formData.phone_number}`,
-      };
-      console.log("Register Payload:", payload);
-
-      const response = await axios.post(
-        "https://stagging.washwell.ae/api/register",
-        payload
-      );
+      setPhoneNumber(formData.phone_number);
 
       Toast.show({
         type: "success",
-        text1: "Registration Successful",
-        text2: "Welcome to Washwell!",
+        text1: "Success",
+        text2: "Welcome! Registration completed.",
       });
 
-      navigation.navigate("enable");
-      console.log("API Response:", response.data);
+      navigation.navigate("verification");
     } catch (error) {
-      console.log("Error:", error);
-      console.log("Error Details:", error.message, error.errors);
-      console.log("API Error Response:", error?.response?.data);
       if (error.name === "ValidationError") {
+        const newErrors = {};
+        error.inner.forEach((err) => {
+          newErrors[err.path] = err.message;
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Validation Error",
-          text2: error.errors.join(", "),
+          text2: error.inner.map((err) => err.message).join(", "),
         });
       } else {
-        const errorMessages = error.response?.data?.errors
-          ? Object.entries(error.response.data.errors)
-              .map(([key, messages]) => `${key}: ${messages.join(", ")}`)
-              .join("; ")
-          : error.response?.data?.message || "Something went wrong";
+        const newErrors = {};
+        const backendErrors = error.response?.data?.errors || {};
+        Object.entries(backendErrors).forEach(([key, messages]) => {
+          newErrors[key] = messages.join(", ");
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Registration Failed",
-          text2: errorMessages,
+          text2: error.response?.data?.message || "Something went wrong",
         });
       }
     }
@@ -131,48 +119,68 @@ const SignUp = ({ navigation }) => {
           </View>
           <Divider />
           <View style={styles.inputContainer}>
-            <RNTextInput
-              placeholder="Name"
-              value={formData.name}
-              onChangeText={(text) => handleChange("name", text)}
-            />
-            <RNTextInput
-              placeholder="Email"
-              value={formData.email}
-              onChangeText={(text) => handleChange("email", text)}
-              keyboardType="email-address"
-            />
-            <RNTextInput
-              placeholder="Referral Code"
-              value={formData.referred_by}
-              onChangeText={(text) => handleChange("referred_by", text)}
-            />
-            <RNTextInput
-              placeholder="Password"
-              secureTextEntry
-              value={formData.password}
-              onChangeText={(text) => handleChange("password", text)}
-            />
-            <RNTextInput
-              placeholder="Confirm Password"
-              secureTextEntry
-              value={formData.password_confirmation}
-              onChangeText={(text) => handleChange("password_confirmation", text)}
-            />
-            <View style={styles.mobileNumberContainer}>
-              <RNView style={styles.flagContainer}>
-                <Img source={uaeFlag} width={22} height={22} />
-                <RNText style={externalStyles.txtSm}>+971</RNText>
-              </RNView>
-              <View style={styles.input}>
-                <RNTextInput
-                  placeholder="Mobile Number"
-                  keyboardType="numeric"
-                  value={formData.phone_number}
-                  onChangeText={(text) => handleChange("phone_number", text)}
-                  maxLength={9}
-                />
+            <View>
+              <RNTextInput
+                placeholder="Name"
+                value={formData.name}
+                onChangeText={(text) => handleChange("name", text)}
+              />
+              {errors.name && <RNText style={styles.error}>{errors.name}</RNText>}
+            </View>
+            <View>
+              <RNTextInput
+                placeholder="Email"
+                value={formData.email}
+                onChangeText={(text) => handleChange("email", text)}
+                keyboardType="email-address"
+              />
+              {errors.email && <RNText style={styles.error}>{errors.email}</RNText>}
+            </View>
+            <View>
+              <RNTextInput
+                placeholder="Referral Code"
+                value={formData.referred_by}
+                onChangeText={(text) => handleChange("referred_by", text)}
+              />
+              {errors.referred_by && <RNText style={styles.error}>{errors.referred_by}</RNText>}
+            </View>
+            <View>
+              <RNTextInput
+                placeholder="Password"
+                secureTextEntry
+                value={formData.password}
+                onChangeText={(text) => handleChange("password", text)}
+              />
+              {errors.password && <RNText style={styles.error}>{errors.password}</RNText>}
+            </View>
+            <View>
+              <RNTextInput
+                placeholder="Confirm Password"
+                secureTextEntry
+                value={formData.password_confirmation}
+                onChangeText={(text) => handleChange("password_confirmation", text)}
+              />
+              {errors.password_confirmation && (
+                <RNText style={styles.error}>{errors.password_confirmation}</RNText>
+              )}
+            </View>
+            <View>
+              <View style={styles.mobileNumberContainer}>
+                <RNView style={styles.flagContainer}>
+                  <Img source={uaeFlag} width={22} height={22} />
+                  <RNText style={externalStyles.txtSm}>+971</RNText>
+                </RNView>
+                <View style={styles.input}>
+                  <RNTextInput
+                    placeholder="Mobile Number "
+                    keyboardType="phone-pad"
+                    value={formData.phone_number}
+                    onChangeText={(text) => handleChange("phone_number", text)}
+                    maxLength={14}
+                  />
+                </View>
               </View>
+              {errors.phone_number && <RNText style={styles.error}>{errors.phone_number}</RNText>}
             </View>
           </View>
           <View style={styles.checkContainer}>
@@ -248,5 +256,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     paddingBottom: 50,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });

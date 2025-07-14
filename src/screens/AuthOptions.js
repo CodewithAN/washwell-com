@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { externalStyles } from "../utils/Theme";
 import { API_URL, horizantGap, primaryHeight } from "../utils/Constant";
 import Img from "../components/ui/Img";
@@ -15,109 +15,70 @@ import RNView from "../components/ui/RNView";
 import RNText from "../components/ui/RNText";
 import Divider from "../components/auth/Divider";
 import AuthLayout from "../Layouts/AuthLayout";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
+import { ContextProvider } from "../global/Context";
 
 const phoneSchema = Yup.object().shape({
   phone_number: Yup.string()
-    .matches(/^(05\d{7})$/, "Phone number must start with 05 and be 9 digits")
+    .matches(/^\+\d{4,14}$/, "Phone number must start with + and have 4-14 digits")
     .required("Phone number is required"),
 });
 
 const AuthOptions = ({ navigation }) => {
-  const [formData, setFormData] = useState({
-    phone_number: "",
-  });
-  const phoneInputRef = useRef(formData.phone_number);
-
-  useEffect(() => {
-    console.log("formData updated:", formData);
-  }, [formData]);
+  const { setPhoneNumber } = useContext(ContextProvider);
+  const [formData, setFormData] = useState({ phone_number: "" });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (name, value) => {
-    console.log("Raw onChangeText Event:", value);
-    console.log("Raw Event Type:", typeof value);
-    console.log("Raw Event Characters:", JSON.stringify(value));
-    console.log("Raw Event Bytes:", new TextEncoder().encode(value));
-    const cleanedValue = String(value)
-      .replace(/[^\x30-\x39]/g, "")
-      .slice(0, 20);
-    const newFormData = { ...formData, [name]: cleanedValue };
-    setFormData(newFormData);
-    phoneInputRef.current = cleanedValue;
-    console.log("Cleaned Input:", cleanedValue);
-    console.log("Updated formData:", newFormData);
-    console.log("Phone Input (ref):", phoneInputRef.current);
-    console.log("Input Type:", typeof cleanedValue);
+    const cleanedValue = String(value).replace(/[^\+\d]/g, "").slice(0, 14);
+    setFormData({ ...formData, [name]: cleanedValue });
+    setErrors({ ...errors, [name]: "" });
   };
 
   const handleSubmit = async () => {
     try {
-      console.log("Submitting formData:", formData);
-      console.log("Phone Input (ref):", phoneInputRef.current);
-      console.log("Validation Input:", formData.phone_number);
-      console.log("Validation Input Type:", typeof formData.phone_number);
-      console.log("Validation Input Length:", formData.phone_number.length);
-      console.log(
-        "Validation Input Characters:",
-        JSON.stringify(formData.phone_number)
-      );
-      console.log(
-        "Validation Input Bytes:",
-        new TextEncoder().encode(formData.phone_number)
-      );
-      const isValid = /^(05\d{7})$/.test(formData.phone_number);
-      console.log("Pre-validation Regex Test:", isValid);
       await phoneSchema.validate(formData, { abortEarly: false });
+      const payload = { phone_number: formData.phone_number };
+      await axios.post(`${API_URL}/login-with-phone`, payload);
 
-      const payload = { phone_number: `+971${formData.phone_number}` };
-      console.log("API Payload:", payload);
-
-      const response = await axios.post(`${API_URL}/login-with-phone`, payload);
-      console.log("API Success:", response.data);
-
+      setPhoneNumber(formData.phone_number);
       Toast.show({
         type: "success",
-        text1: "OTP Sent",
-        text2: "Please check your phone for the OTP.",
+        text1: "Success",
+        text2: "OTP sent to your phone.",
       });
 
-      // Pass phone number to verification screen
-      navigation.navigate("verification", {
-        phone_number: `+971${formData.phone_number}`,
-      });
-      console.log("API Response:", response.data);
+      navigation.navigate("verification");
     } catch (error) {
-      console.log("Error:", error);
-      console.log("Error Details:", error.message, error.errors);
-      console.log("API Error Response:", error?.response?.data);
       if (error.name === "ValidationError") {
+        const newErrors = {};
+        error.inner.forEach((err) => {
+          newErrors[err.path] = err.message;
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Validation Error",
-          text2: error.errors.join(", "),
+          text2: error.inner.map((err) => err.message).join(", "),
         });
       } else {
-        const errorMessages = error.response?.data?.errors
-          ? Object.entries(error.response.data.errors)
-              .map(([key, messages]) => `${key}: ${messages.join(", ")}`)
-              .join("; ")
-          : error.response?.data?.message || "Something went wrong";
+        const newErrors = {};
+        const backendErrors = error.response?.data?.errors || {};
+        Object.entries(backendErrors).forEach(([key, messages]) => {
+          newErrors[key] = messages.join(", ");
+        });
+        setErrors(newErrors);
         Toast.show({
           type: "error",
           text1: "Login Failed",
-          text2: errorMessages,
+          text2: error.response?.data?.message || "Something went wrong",
         });
-        // If "User not found", still navigate to verification to request OTP
-        if (
-          error.response?.data?.message ===
-          "User not found with this phone number"
-        ) {
-          navigation.navigate("verification", {
-            phone_number: `+971${formData.phone_number}`,
-          });
+        if (error.response?.data?.message === "User not found with this phone number") {
+          setPhoneNumber(formData.phone_number);
+          navigation.navigate("verification");
         }
       }
     }
@@ -130,17 +91,18 @@ const AuthOptions = ({ navigation }) => {
         <View style={styles.container}>
           <View style={styles.mobileNumberContainer}>
             <RNView style={styles.flagContainer}>
-              <Img source={uaeFlag} height={22} width={22} />
+              <Img source={uaeFlag} width={22} height={22} />
               <RNText style={externalStyles.txtSm}>+971</RNText>
             </RNView>
             <View style={styles.input}>
               <RNTextInput
+                placeholder="Mobile Number "
+                keyboardType="phone-pad"
                 value={formData.phone_number}
                 onChangeText={(text) => handleChange("phone_number", text)}
-                placeholder="Mobile Number"
-                keyboardType="numeric"
-                maxLength={9}
+                maxLength={14}
               />
+              {errors.phone_number && <RNText style={styles.error}>{errors.phone_number}</RNText>}
             </View>
           </View>
           <Button onPress={handleSubmit} title="Log in" />
@@ -227,12 +189,9 @@ const styles = StyleSheet.create({
     gap: 5,
     marginTop: 7,
   },
-  nativeInput: {
-    height: primaryHeight,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    fontSize: 16,
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });

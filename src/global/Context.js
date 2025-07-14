@@ -1,10 +1,12 @@
 import { createContext, useState } from "react";
+
 export const ContextProvider = createContext();
 
 const Context = (props) => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
 
   const contextValue = {
     token,
@@ -13,6 +15,8 @@ const Context = (props) => {
     setUser,
     selectedLanguage,
     setSelectedLanguage,
+    phoneNumber,
+    setPhoneNumber,
   };
 
   return (
