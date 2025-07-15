@@ -10,12 +10,15 @@ import colors, { externalStyles } from "../utils/Theme";
 import logo from "../../assets/images/global/logo.svg";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
-import { horizantGap, primaryHeight } from "../utils/Constant";
+import {
+  horizantGap,
+  primaryHeight,
+} from "../utils/Constant";
 import Button from "../components/ui/Button";
 import email from "../../assets/icons/email.svg";
 import apple from "../../assets/icons/apple.svg";
 import google from "../../assets/icons/google.svg";
-import check from "../../assets/icons/Check.svg";
+
 import uaeFlag from "../../assets/images/flags/uae-flag.svg";
 import Divider from "../components/auth/Divider";
 import RNTextInput from "../components/ui/RNTextInput";
@@ -47,6 +50,9 @@ const registerSchema = Yup.object().shape({
     )
     .required("Phone number is required"),
   referred_by: Yup.string().trim().optional(),
+  termsAccepted: Yup.boolean()
+    .oneOf([true], "You must accept the Terms and Privacy Policy")
+    .required("You must accept the Terms and Privacy Policy"),
 });
 
 const SignUp = ({ navigation }) => {
@@ -58,6 +64,7 @@ const SignUp = ({ navigation }) => {
     password_confirmation: "",
     referred_by: "",
     phone_number: "",
+    termsAccepted: false,
   });
   const [errors, setErrors] = useState({});
   const scrollViewRef = useRef(null);
@@ -69,6 +76,14 @@ const SignUp = ({ navigation }) => {
       [name]: name === "phone_number" ? value : value.trim(),
     }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleCheckboxToggle = () => {
+    setFormData((prev) => ({
+      ...prev,
+      termsAccepted: !prev.termsAccepted,
+    }));
+    setErrors((prev) => ({ ...prev, termsAccepted: "" }));
   };
 
   const handleFocus = (field) => {
@@ -163,6 +178,7 @@ const SignUp = ({ navigation }) => {
                   onChangeText={(text) => handleChange("name", text)}
                   onFocus={() => handleFocus("name")}
                   ref={(ref) => (inputRefs.current["name"] = ref)}
+                  style={[styles.input, errors.name && styles.errorBorder]}
                 />
                 {errors.name && (
                   <RNText style={styles.error}>{errors.name}</RNText>
@@ -176,6 +192,7 @@ const SignUp = ({ navigation }) => {
                   keyboardType="email-address"
                   onFocus={() => handleFocus("email")}
                   ref={(ref) => (inputRefs.current["email"] = ref)}
+                  style={[styles.input, errors.email && styles.errorBorder]}
                 />
                 {errors.email && (
                   <RNText style={styles.error}>{errors.email}</RNText>
@@ -188,6 +205,10 @@ const SignUp = ({ navigation }) => {
                   onChangeText={(text) => handleChange("referred_by", text)}
                   onFocus={() => handleFocus("referred_by")}
                   ref={(ref) => (inputRefs.current["referred_by"] = ref)}
+                  style={[
+                    styles.input,
+                    errors.referred_by && styles.errorBorder,
+                  ]}
                 />
                 {errors.referred_by && (
                   <RNText style={styles.error}>{errors.referred_by}</RNText>
@@ -201,6 +222,7 @@ const SignUp = ({ navigation }) => {
                   onChangeText={(text) => handleChange("password", text)}
                   onFocus={() => handleFocus("password")}
                   ref={(ref) => (inputRefs.current["password"] = ref)}
+                  style={[styles.input, errors.password && styles.errorBorder]}
                 />
                 {errors.password && (
                   <RNText style={styles.error}>{errors.password}</RNText>
@@ -218,6 +240,10 @@ const SignUp = ({ navigation }) => {
                   ref={(ref) =>
                     (inputRefs.current["password_confirmation"] = ref)
                   }
+                  style={[
+                    styles.input,
+                    errors.password_confirmation && styles.errorBorder,
+                  ]}
                 />
                 {errors.password_confirmation && (
                   <RNText style={styles.error}>
@@ -231,34 +257,52 @@ const SignUp = ({ navigation }) => {
                     <Img source={uaeFlag} width={22} height={22} />
                     <RNText style={externalStyles.txtSm}>+971</RNText>
                   </RNView>
-                  <View style={styles.input}>
-                    <RNTextInput
-                      placeholder="Mobile Number "
-                      keyboardType="phone-pad"
-                      value={formData.phone_number}
-                      onChangeText={(text) =>
-                        handleChange("phone_number", text)
-                      }
-                      maxLength={14}
-                      onFocus={() => handleFocus("phone_number")}
-                      ref={(ref) => (inputRefs.current["phone_number"] = ref)}
-                    />
-                  </View>
+                  <RNTextInput
+                    placeholder="Mobile Number"
+                    keyboardType="phone-pad"
+                    value={formData.phone_number}
+                    onChangeText={(text) => handleChange("phone_number", text)}
+                    maxLength={14}
+                    onFocus={() => handleFocus("phone_number")}
+                    ref={(ref) => (inputRefs.current["phone_number"] = ref)}
+                    style={[
+                      styles.input,
+                      errors.phone_number && styles.errorBorder,
+                    ]}
+                  />
                 </View>
                 {errors.phone_number && (
                   <RNText style={styles.error}>{errors.phone_number}</RNText>
                 )}
               </View>
             </View>
-            <View style={styles.checkContainer}>
-              <Img source={check} width={18} height={18} />
+
+            <TouchableOpacity
+              style={styles.checkContainer}
+              onPress={handleCheckboxToggle}
+            >
+              <View
+                style={[
+                  styles.checkboxBox,
+                  formData.termsAccepted && styles.checkboxChecked,
+                ]}
+              >
+                {formData.termsAccepted && (
+                  <RNText style={styles.checkboxTick}>✔</RNText>
+                )}
+              </View>
               <RNText>I agree to the Terms and Privacy Policy.</RNText>
-            </View>
+            </TouchableOpacity>
+            {errors.termsAccepted && (
+              <RNText style={styles.error}>{errors.termsAccepted}</RNText>
+            )}
+
             <Button
               onPress={handleRegister}
               title="Sign up"
               variant="gradient"
             />
+
             <View style={styles.haveAccount}>
               <RNText>Have an account?</RNText>
               <TouchableOpacity
@@ -314,12 +358,36 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    borderWidth: 0,
+   
   },
   checkContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
   },
+  checkboxBox: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 3,
+  },
+
+  checkboxChecked: {
+    backgroundColor: colors.white,
+    borderColor: colors.primary,
+  },
+
+  checkboxTick: {
+    color: colors.primary,
+    fontSize: 10,
+    marginLeft: 2,
+    marginBottom: 2,
+  },
+
   haveAccount: {
     flexDirection: "row",
     alignItems: "center",
@@ -330,5 +398,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 5,
+  },
+  errorBorder: {
+    borderColor: "red",
+    borderWidth:1,
   },
 });

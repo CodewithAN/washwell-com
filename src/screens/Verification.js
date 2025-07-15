@@ -1,14 +1,13 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap } from "../utils/Constant";
+import { horizantGap, primarBorderRadius } from "../utils/Constant";
 import Header from "../components/global/Header";
 import Img from "../components/ui/Img";
 import logo from "../../assets/images/global/logo.svg";
 import { vw } from "../utils/ScreenSize";
 import RNText from "../components/ui/RNText";
-import RNTextInput from "../components/ui/RNTextInput";
 import Button from "../components/ui/Button";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
@@ -26,6 +25,7 @@ const Verification = ({ navigation }) => {
   const { phoneNumber, setUser, setToken } = useContext(ContextProvider);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
+  const inputRefs = useRef([]); 
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
@@ -33,10 +33,27 @@ const Verification = ({ navigation }) => {
       newOtp[index] = value;
       setOtp(newOtp);
       setError("");
+
+  
+      if (value && index < 5) {
+        inputRefs.current[index + 1].focus();
+      }
+     
+      if (!value && index > 0) {
+        inputRefs.current[index - 1].focus();
+      }
     }
   };
 
   const getOtpCode = () => otp.join("");
+
+ 
+  useEffect(() => {
+    const code = getOtpCode();
+    if (code.length === 6) {
+      handleVerify();
+    }
+  }, [otp]);
 
   const handleVerify = async () => {
     const code = getOtpCode();
@@ -128,13 +145,21 @@ const Verification = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           {otp.map((digit, index) => (
-            <RNTextInput
+            <TextInput
               key={index}
+              ref={(ref) => (inputRefs.current[index] = ref)} 
               value={digit}
               onChangeText={(value) => handleOtpChange(index, value)}
               keyboardType="numeric"
               maxLength={1}
-              style={{ textAlign: "center" }}
+              style={styles.input}
+              autoFocus={index === 0} 
+              returnKeyType={index < 5 ? "next" : "done"} 
+              onSubmitEditing={() => {
+                if (index < 5) {
+                  inputRefs.current[index + 1].focus();
+                }
+              }}
             />
           ))}
         </View>
@@ -192,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   inputContainer: {
-    width: "12.8%",
+  
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -219,5 +244,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     textAlign: "center",
+  },
+  input: {
+    backgroundColor: colors.white,
+    paddingHorizontal: 16,
+    borderRadius: primarBorderRadius,
+   
   },
 });

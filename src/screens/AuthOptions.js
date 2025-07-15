@@ -23,7 +23,10 @@ import { ContextProvider } from "../global/Context";
 
 const phoneSchema = Yup.object().shape({
   phone_number: Yup.string()
-    .matches(/^\+\d{4,14}$/, "Phone number must start with + and have 4-14 digits")
+    .matches(
+      /^\+\d{4,14}$/,
+      "Phone number must start with + and have 4-14 digits"
+    )
     .required("Phone number is required"),
 });
 
@@ -33,7 +36,9 @@ const AuthOptions = ({ navigation }) => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (name, value) => {
-    const cleanedValue = String(value).replace(/[^\+\d]/g, "").slice(0, 14);
+    const cleanedValue = String(value)
+      .replace(/[^\+\d]/g, "")
+      .slice(0, 14);
     setFormData({ ...formData, [name]: cleanedValue });
     setErrors({ ...errors, [name]: "" });
   };
@@ -76,7 +81,10 @@ const AuthOptions = ({ navigation }) => {
           text1: "Login Failed",
           text2: error.response?.data?.message || "Something went wrong",
         });
-        if (error.response?.data?.message === "User not found with this phone number") {
+        if (
+          error.response?.data?.message ===
+          "User not found with this phone number"
+        ) {
           setPhoneNumber(formData.phone_number);
           navigation.navigate("verification");
         }
@@ -94,18 +102,23 @@ const AuthOptions = ({ navigation }) => {
               <Img source={uaeFlag} width={22} height={22} />
               <RNText style={externalStyles.txtSm}>+971</RNText>
             </RNView>
-            <View style={styles.input}>
+            <View style={styles.inputWrapper}>
               <RNTextInput
-                placeholder="Mobile Number "
+                placeholder="Mobile Number"
                 keyboardType="phone-pad"
                 value={formData.phone_number}
                 onChangeText={(text) => handleChange("phone_number", text)}
                 maxLength={14}
+                style={[styles.input, errors.phone_number && styles.inputError]}
               />
-              {errors.phone_number && <RNText style={styles.error}>{errors.phone_number}</RNText>}
+              {errors.phone_number && (
+                <RNText style={styles.error}>{errors.phone_number}</RNText>
+              )}
             </View>
           </View>
-          <Button onPress={handleSubmit} title="Log in" />
+          <View style={styles.buttonWrapper}>
+            <Button onPress={handleSubmit} title="Log in" />
+          </View>
 
           <Divider />
           <View style={styles.buttonContainer}>
@@ -162,17 +175,39 @@ const styles = StyleSheet.create({
   },
   mobileNumberContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
+    alignItems: "flex-start",
+    gap: 10,
+    width: "100%",
   },
   flagContainer: {
     height: primaryHeight,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+  },
+  inputWrapper: {
+    flex: 1,
+    minHeight: primaryHeight,
   },
   input: {
-    flex: 1,
+    height: primaryHeight,
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    borderWidth: 0,
+    
+  },
+  inputError: {
+    borderColor: "red",
+    borderWidth:1,
+  },
+  buttonWrapper: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 10,
   },
   buttonContainer: {
     gap: 10,
@@ -193,5 +228,6 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 5,
+    paddingLeft: 10,
   },
 });
