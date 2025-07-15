@@ -8,8 +8,8 @@ import * as SplashScreen from "expo-splash-screen";
 
 import AuthStack from "./AuthStack";
 import i18n from "../utils/i18n";
-import colors from "../utils/Theme";
 import useFonts from "../utils/useFonts";
+import MainStack from "./MainStack";
 
 const MainNavigator = () => {
   const { user, setToken, setUser, setSelectedLanguage } =

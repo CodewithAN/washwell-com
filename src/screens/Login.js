@@ -7,10 +7,12 @@ import RNTextInput from "../components/ui/RNTextInput";
 import { API_URL, horizantGap } from "../utils/Constant";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
+import { ContextProvider } from "../global/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -25,10 +27,11 @@ const loginSchema = Yup.object().shape({
 const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const { setToken, setUser } = useContext(ContextProvider);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value.trim() }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); 
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleLogin = async () => {
@@ -40,9 +43,16 @@ const Login = ({ navigation }) => {
         type: "success",
         text1: "Success",
         text2: "Welcome back! Login successful.",
+        topOffset: 10,
       });
-
-      navigation.navigate("enable");
+      let data = response?.data?.data;
+      console.log(data, "data...");
+      let user = data?.user;
+      let token = data?.token;
+      setUser(user);
+      setToken(token);
+      AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+      AsyncStorage.setItem("washwell-user", JSON.stringify(user));
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = { email: "", password: "" };
@@ -65,6 +75,7 @@ const Login = ({ navigation }) => {
         Toast.show({
           type: "error",
           text1: "Login Failed",
+          topOffset: 10,
           text2: error.response?.data?.message || "Invalid credentials",
         });
       }
@@ -89,11 +100,13 @@ const Login = ({ navigation }) => {
         <View>
           <RNTextInput
             placeholder="Password"
-            secureTextEntry
+            secure
             value={formData.password}
             onChangeText={(text) => handleChange("password", text)}
           />
-          {errors.password && <RNText style={styles.error}>{errors.password}</RNText>}
+          {errors.password && (
+            <RNText style={styles.error}>{errors.password}</RNText>
+          )}
         </View>
         <TouchableOpacity style={styles.forgetButton} activeOpacity={0.7}>
           <RNText color="primary">Forget Password?</RNText>

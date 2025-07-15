@@ -10,15 +10,19 @@ import SupportIcon from "../../assets/menu/chat.svg";
 import LogoutIcon from "../../assets/menu/signout.svg";
 import person from "../../assets/menu/person.svg";
 import arrow from "../../assets/menu/arrow.svg";
-
 import RNText from "../components/ui/RNText";
 import Img from "../components/ui/Img";
 import Header from "../components/global/Header";
 import colors, { externalStyles } from "../utils/Theme";
 import { horizantGap } from "../utils/Constant";
 import RNView from "../components/ui/RNView";
+import { useContext } from "react";
+import { ContextProvider } from "../global/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 const Menu = ({ navigation }) => {
+  const { setUser, setToken } = useContext(ContextProvider);
   const menuItems = [
     {
       title: "Personal Details",
@@ -34,6 +38,17 @@ const Menu = ({ navigation }) => {
     { title: "Support Center", icon: SupportIcon, screen: "home" },
     { title: "Sign Out", icon: LogoutIcon, screen: "home" },
   ];
+
+  const handleLogout = () => {
+    Toast.show({
+      type: "success",
+      text1: "Logout Successfully!",
+    });
+    setUser(null);
+    setToken(null);
+    AsyncStorage.removeItem("washwell-token");
+    AsyncStorage.removeItem("washwell-user");
+  };
 
   return (
     <>
@@ -52,7 +67,11 @@ const Menu = ({ navigation }) => {
         <View style={styles.menuList}>
           {menuItems.map((item, index) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate(item.screen)}
+              onPress={() =>
+                item.title == "Sign Out"
+                  ? handleLogout()
+                  : navigation.navigate(item.screen)
+              }
               activeOpacity={1}
               key={index}
             >

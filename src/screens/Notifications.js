@@ -12,7 +12,7 @@ import coupons from "../../assets/icons/coupons.svg";
 const Notifications = () => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Header title="Notifications" />
+      <Header space title="Notifications" />
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.mainContainer}>
           <View>
