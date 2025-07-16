@@ -25,7 +25,8 @@ const Verification = ({ navigation }) => {
   const { phoneNumber, setUser, setToken } = useContext(ContextProvider);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
-  const inputRefs = useRef([]); 
+  const [loading, setLoading] = useState(false); // Loading state for verify
+  const inputRefs = useRef([]);
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
@@ -34,11 +35,10 @@ const Verification = ({ navigation }) => {
       setOtp(newOtp);
       setError("");
 
-  
       if (value && index < 5) {
         inputRefs.current[index + 1].focus();
       }
-     
+
       if (!value && index > 0) {
         inputRefs.current[index - 1].focus();
       }
@@ -47,7 +47,6 @@ const Verification = ({ navigation }) => {
 
   const getOtpCode = () => otp.join("");
 
- 
   useEffect(() => {
     const code = getOtpCode();
     if (code.length === 6) {
@@ -58,6 +57,7 @@ const Verification = ({ navigation }) => {
   const handleVerify = async () => {
     const code = getOtpCode();
     try {
+      setLoading(true); // Set loading to true
       await otpSchema.validate({ code }, { abortEarly: false });
       if (!phoneNumber) {
         throw new Error("Phone number is missing");
@@ -72,8 +72,8 @@ const Verification = ({ navigation }) => {
       let token = data?.token;
       setUser(user);
       setToken(token);
-      AsyncStorage.setItem("washwell-token", JSON.stringify(token));
-      AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+      await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+      await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
       Toast.show({
         type: "success",
         text1: "Logged In Successfully",
@@ -98,6 +98,8 @@ const Verification = ({ navigation }) => {
           text2: message,
         });
       }
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -147,14 +149,14 @@ const Verification = ({ navigation }) => {
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (inputRefs.current[index] = ref)} 
+              ref={(ref) => (inputRefs.current[index] = ref)}
               value={digit}
               onChangeText={(value) => handleOtpChange(index, value)}
               keyboardType="numeric"
               maxLength={1}
               style={styles.input}
-              autoFocus={index === 0} 
-              returnKeyType={index < 5 ? "next" : "done"} 
+              autoFocus={index === 0}
+              returnKeyType={index < 5 ? "next" : "done"}
               onSubmitEditing={() => {
                 if (index < 5) {
                   inputRefs.current[index + 1].focus();
@@ -163,9 +165,13 @@ const Verification = ({ navigation }) => {
             />
           ))}
         </View>
-        {error && <RNText style={styles.error}>{error}</RNText>}
 
-        <Button onPress={handleVerify} title="Confirm" variant="gradient" />
+        <Button
+          onPress={handleVerify}
+          title="Confirm"
+          variant="gradient"
+          loading={loading}
+        />
 
         <View style={styles.recieveOTP}>
           <RNText>Did not receive OTP? </RNText>
@@ -217,7 +223,6 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   inputContainer: {
-  
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -245,10 +250,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: "center",
   },
+  errorBorder: {
+    borderColor: "red",
+    borderWidth: 1,
+  },
   input: {
     backgroundColor: colors.white,
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     borderRadius: primarBorderRadius,
-   
   },
 });

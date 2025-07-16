@@ -27,6 +27,7 @@ const loginSchema = Yup.object().shape({
 const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false); 
   const { setToken, setUser } = useContext(ContextProvider);
 
   const handleChange = (name, value) => {
@@ -36,6 +37,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
+      setLoading(true); 
       await loginSchema.validate(formData, { abortEarly: false });
       const response = await axios.post(`${API_URL}/login`, formData);
 
@@ -51,8 +53,8 @@ const Login = ({ navigation }) => {
       let token = data?.token;
       setUser(user);
       setToken(token);
-      AsyncStorage.setItem("washwell-token", JSON.stringify(token));
-      AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+      await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+      await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = { email: "", password: "" };
@@ -79,6 +81,8 @@ const Login = ({ navigation }) => {
           text2: error.response?.data?.message || "Invalid credentials",
         });
       }
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -94,6 +98,7 @@ const Login = ({ navigation }) => {
             value={formData.email}
             onChangeText={(text) => handleChange("email", text)}
             keyboardType="email-address"
+            style={[errors.email && styles.errorBorder]}
           />
           {errors.email && <RNText style={styles.error}>{errors.email}</RNText>}
         </View>
@@ -103,6 +108,7 @@ const Login = ({ navigation }) => {
             secure
             value={formData.password}
             onChangeText={(text) => handleChange("password", text)}
+            style={[errors.password && styles.errorBorder]}
           />
           {errors.password && (
             <RNText style={styles.error}>{errors.password}</RNText>
@@ -116,6 +122,7 @@ const Login = ({ navigation }) => {
           style={styles.btn}
           title="Login"
           variant="gradient"
+          loading={loading} 
         />
       </View>
       <View style={styles.donotHaveAccount}>
@@ -165,5 +172,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 5,
+  },
+  errorBorder: {
+    borderColor: "red",
+    borderWidth: 1,
   },
 });

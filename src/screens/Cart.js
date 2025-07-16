@@ -22,8 +22,20 @@ import coat from "../../assets/cart/coat.svg";
 import jeans from "../../assets/cart/jeans.svg";
 import shirt from "../../assets/cart/shirt.svg";
 import Button from "../components/ui/Button";
+import { useState } from "react";
 
 const Cart = ({ navigation }) => {
+  
+  const [selectedTab, setSelectedTab] = useState(0); 
+
+
+  const tabs = [
+    { icon: dryClean, text1: "Clean&", text2: "Press" },
+    { icon: onlyPress, text1: "Only", text2: "Press" },
+    { icon: washFold, text1: "Wash", text2: "&Fold" },
+    { icon: carpets, text1: "Carpet&", text2: "Curtains" },
+  ];
+
   return (
     <>
       <Header space title="Select Items" />
@@ -32,37 +44,51 @@ const Cart = ({ navigation }) => {
           <View style={styles.top}>
             {/* Service Tabs */}
             <View style={styles.outerContainer}>
-              <View style={[styles.innerContainer, styles.selectedTab]}>
-                <Img source={dryClean} width={38} height={40} />
-                <View style={styles.text}>
-                  <RNText style={{ color: colors.white }}>Clean&</RNText>
-                  <RNText style={{ color: colors.white }}>Press</RNText>
-                </View>
-              </View>
-
-              <View style={styles.innerContainer}>
-                <Img source={onlyPress} width={38} height={40} />
-                <View style={styles.text}>
-                  <RNText>Only</RNText>
-                  <RNText>Press</RNText>
-                </View>
-              </View>
-
-              <View style={styles.innerContainer}>
-                <Img source={washFold} width={38} height={40} />
-                <View style={styles.text}>
-                  <RNText>Wash</RNText>
-                  <RNText>&Fold</RNText>
-                </View>
-              </View>
-
-              <View style={styles.innerContainer}>
-                <Img source={carpets} width={38} height={40} />
-                <View style={styles.text}>
-                  <RNText>Carpet&</RNText>
-                  <RNText>Curtains</RNText>
-                </View>
-              </View>
+              {tabs.map((tab, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.innerContainer,
+                    selectedTab === index && styles.selectedTab, 
+                  ]}
+                  onPress={() => setSelectedTab(index)} 
+                >
+                  <View
+                    style={{
+                      width: 38,
+                      height: 40,
+                      backgroundColor: index === 0 ? 'transparent' : (selectedTab === index ? '#E2E5F4' : 'transparent'), 
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                       borderRadius: index === 0 ? 0 : (selectedTab === index ? 8 : 0),
+                    }}
+                  >
+                    <Img
+                      source={tab.icon}
+                      width={38}
+                      height={40}
+                    />
+                  </View>
+                  <View style={styles.text}>
+                    <RNText
+                      style={{
+                        color: selectedTab === index ? colors.white : colors.black,
+                        fontSize: txtXs,
+                      }}
+                    >
+                      {tab.text1}
+                    </RNText>
+                    <RNText
+                      style={{
+                        color: selectedTab === index ? colors.white : colors.black,
+                        fontSize: txtXs,
+                      }}
+                    >
+                      {tab.text2}
+                    </RNText>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
 
             {/* Search Bar */}
@@ -117,12 +143,12 @@ const Cart = ({ navigation }) => {
 
             {/* Coat Card  */}
             <RNView style={styles.cardWrapper}>
-              {/* Floating Image */}
+            
               <View style={styles.imageContainer}>
                 <Img source={coat} style={styles.inner} />
               </View>
 
-              {/* Card */}
+          
               <View style={styles.cardContainer}>
                 <View style={styles.cardLeft}>
                   <RNText style={externalStyles.txtMd} fontWeight="medium">
@@ -137,7 +163,7 @@ const Cart = ({ navigation }) => {
           </View>
 
           <View style={styles.contentWrapper}>
-            {/* Button */}
+          
             <View style={styles.buttonContainer}>
               <Button
                 onPress={() => navigation.navigate("place-order")}
@@ -172,7 +198,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   outerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -221,7 +246,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   inner: {
     width: "60%",
     height: "60%",

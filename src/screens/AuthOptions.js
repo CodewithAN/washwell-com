@@ -34,6 +34,7 @@ const AuthOptions = ({ navigation }) => {
   const { setPhoneNumber } = useContext(ContextProvider);
   const [formData, setFormData] = useState({ phone_number: "" });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     const cleanedValue = String(value)
@@ -45,6 +46,7 @@ const AuthOptions = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       await phoneSchema.validate(formData, { abortEarly: false });
       const payload = { phone_number: formData.phone_number };
       await axios.post(`${API_URL}/login-with-phone`, payload);
@@ -89,6 +91,8 @@ const AuthOptions = ({ navigation }) => {
           navigation.navigate("verification");
         }
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,7 +121,7 @@ const AuthOptions = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.buttonWrapper}>
-            <Button onPress={handleSubmit} title="Log in" />
+            <Button onPress={handleSubmit} title="Log in" loading={loading} />
           </View>
 
           <Divider />
@@ -198,11 +202,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 10,
     borderWidth: 0,
-    
   },
   inputError: {
     borderColor: "red",
-    borderWidth:1,
+    borderWidth: 1,
   },
   buttonWrapper: {
     width: "100%",

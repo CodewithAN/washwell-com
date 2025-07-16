@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -18,8 +19,58 @@ import ellipse from "../../assets/order/ellipse.png";
 import RNView from "../components/ui/RNView";
 import Button from "../components/ui/Button";
 import RNTextInput from "../components/ui/RNTextInput";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+
+const getLocalDate = (offsetHours = 0) => {
+  const now = new Date();
+  now.setMinutes(0);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  now.setHours(now.getHours() + offsetHours);
+  return new Date(now);
+};
 
 const PlaceOrder = ({ navigation }) => {
+  const [tip, setTip] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+  const [pickupDate, setPickupDate] = useState(getLocalDate());
+  const [deliveryDate, setDeliveryDate] = useState(getLocalDate(24));
+  const [showPickupPicker, setShowPickupPicker] = useState(false);
+  const [showDeliveryPicker, setShowDeliveryPicker] = useState(false);
+
+  const handleTipPress = (value) => setTip(value.toString());
+  const handlePaymentMethodPress = (method) => setPaymentMethod(method);
+
+  const handlePickupConfirm = (date) => {
+    setPickupDate(date);
+    setShowPickupPicker(false);
+  };
+
+  const handleDeliveryConfirm = (date) => {
+    setDeliveryDate(date);
+    setShowDeliveryPicker(false);
+  };
+
+  const formatDate = (date) => {
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const formatTime = (date) => {
+    const startHour = date.getHours();
+    const endHour = (startHour + 1) % 24;
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    const formatHour = (hour) => {
+      const h = hour % 12 || 12;
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      return `${h}:${minutes} ${ampm}`;
+    };
+
+    return `${formatHour(startHour)} - ${formatHour(endHour)}`;
+  };
+
   return (
     <>
       <Header space title="Place Order" />
@@ -31,24 +82,25 @@ const PlaceOrder = ({ navigation }) => {
                 <RNText style={externalStyles.txtSm} fontWeight="medium">
                   Select pick-up
                 </RNText>
-                <RNText style={externalStyles.txtSm}>6 May, 2025</RNText>
-                <RNText style={externalStyles.txtSm}>7PM- 8PM</RNText>
+                <RNText style={externalStyles.txtSm}>{formatDate(pickupDate)}</RNText>
+                <RNText style={externalStyles.txtSm}>{formatTime(pickupDate)}</RNText>
               </View>
-              <View style={styles.date}>
+              <TouchableOpacity style={styles.date} onPress={() => setShowPickupPicker(true)}>
                 <Img source={calender} width={22} height={22} />
-              </View>
+              </TouchableOpacity>
             </RNView>
+
             <RNView style={styles.topContainer}>
               <View style={styles.left}>
                 <RNText style={externalStyles.txtSm} fontWeight="medium">
-                  Select pick-up
+                  Select delivery
                 </RNText>
-                <RNText style={externalStyles.txtSm}>6 May, 2025</RNText>
-                <RNText style={externalStyles.txtSm}>7PM- 8PM</RNText>
+                <RNText style={externalStyles.txtSm}>{formatDate(deliveryDate)}</RNText>
+                <RNText style={externalStyles.txtSm}>{formatTime(deliveryDate)}</RNText>
               </View>
-              <View style={styles.date}>
+              <TouchableOpacity style={styles.date} onPress={() => setShowDeliveryPicker(true)}>
                 <Img source={calender} width={22} height={22} />
-              </View>
+              </TouchableOpacity>
             </RNView>
           </View>
 
@@ -59,7 +111,7 @@ const PlaceOrder = ({ navigation }) => {
 
           <View style={styles.fee}>
             <RNText>Delivery fee</RNText>
-            <RNText style={{ marginRight: 30 }}>5.00 AED</RNText>
+            <RNText style={{ textAlign: "right" }}>5.00 AED</RNText>
           </View>
 
           <View style={{ gap: 5 }}>
@@ -79,27 +131,22 @@ const PlaceOrder = ({ navigation }) => {
 
           <View style={styles.driver}>
             <RNText fontWeight="medium">Driver Tip</RNText>
-            <RNTextInput placeholder="0.00" />
-
+            <RNTextInput
+              placeholder="0.00"
+              value={tip}
+              onChangeText={setTip}
+              keyboardType="numeric"
+            />
             <View style={styles.driverTip}>
-              <RNView style={styles.driverInput}>
-                <RNText>3</RNText>
-              </RNView>
-              <RNView style={styles.driverInput}>
-                <RNText>5</RNText>
-              </RNView>
-              <RNView style={styles.driverInput}>
-                <RNText>10</RNText>
-              </RNView>
-              <RNView style={styles.driverInput}>
-                <RNText>20</RNText>
-              </RNView>
-              <RNView style={styles.driverInput}>
-                <RNText>30</RNText>
-              </RNView>
-              <RNView style={styles.driverInput}>
-                <RNText>50</RNText>
-              </RNView>
+              {[3, 5, 10, 20, 30, 50].map((amount) => (
+                <TouchableOpacity
+                  key={amount}
+                  style={[styles.driverInput]}
+                  onPress={() => handleTipPress(amount)}
+                >
+                  <RNText>{amount}</RNText>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
@@ -107,84 +154,67 @@ const PlaceOrder = ({ navigation }) => {
 
           <View style={styles.method}>
             <RNText fontWeight="medium">Payment Method</RNText>
-            <View style={styles.payment}>
-              <RNView>
-                <RNText
-                  style={{
-                    color: colors.primary,
-                    paddingHorizontal: 5,
-                    fontSize: txtMd,
-                  }}
+            <View style={[styles.payment, paymentMethod !== 'Credit Card' && { marginBottom: "15%" }]}>
+              {['Cash', 'Credit Card', 'Wallet'].map((method) => (
+                <TouchableOpacity
+                  key={method}
+                  style={[
+                    styles.paymentOption,
+                    paymentMethod === method
+                      ? { backgroundColor: colors.primary }
+                      : { backgroundColor: colors.white },
+                  ]}
+                  onPress={() => handlePaymentMethodPress(method)}
                 >
-                  Cash
-                </RNText>
-              </RNView>
-              <RNView style={{ backgroundColor: colors.primary }}>
-                <RNText
-                  style={{
-                    color: colors.white,
-                    paddingHorizontal: 10,
-                    fontSize: txtMd,
-                  }}
-                >
-                  Credit Card
-                </RNText>
-              </RNView>
-              <RNView>
-                <RNText
-                  style={{
-                    color: colors.primary,
-                    paddingHorizontal: 5,
-                    fontSize: txtMd,
-                  }}
-                >
-                  Wallet
-                </RNText>
-              </RNView>
+                  <RNText
+                    style={{
+                      color: paymentMethod === method ? colors.white : colors.primary,
+                      paddingHorizontal: method === 'Credit Card' ? 10 : 5,
+                      fontSize: txtMd,
+                    }}
+                  >
+                    {method}
+                  </RNText>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
-          <View>
-            <RNView style={styles.visa}>
-              <View style={styles.leftSide}>
-                <View style={styles.imgContainer}>
-                  <Img
-                    source={visa}
-                    width={32}
-                    height={10}
-                    style={styles.img}
-                  />
-                </View>
-                <View>
-                  <RNText style={externalStyles.txtMd} fontWeight="medium">
-                    VISA xxxx 8047
-                  </RNText>
-                  <RNText>Expires on 05/29</RNText>
-                </View>
+          {paymentMethod === 'Credit Card' && (
+            <>
+              <View>
+                <RNView style={styles.visa}>
+                  <View style={styles.leftSide}>
+                    <View style={styles.imgContainer}>
+                      <Img source={visa} width={32} height={10} style={styles.img} />
+                    </View>
+                    <View>
+                      <RNText style={externalStyles.txtMd} fontWeight="medium">
+                        VISA xxxx 8047
+                      </RNText>
+                      <RNText>Expires on 05/29</RNText>
+                    </View>
+                  </View>
+                  <View style={styles.rightSide}>
+                    <Img source={ellipse} width={6} height={6} />
+                    <Img source={ellipse} width={6} height={6} />
+                    <Img source={ellipse} width={6} height={6} />
+                  </View>
+                </RNView>
               </View>
 
-              <View style={styles.rightSide}>
-                <Img source={ellipse} width={6} height={6} />
-                <Img source={ellipse} width={6} height={6} />
-                <Img source={ellipse} width={6} height={6} />
-              </View>
-            </RNView>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate("card")}
-            activeOpacity={1}
-          >
-            <RNView style={styles.newCard}>
-              <RNText
-                fontWeight="medium"
-                style={externalStyles.txtMd}
-                color="primary"
+              <TouchableOpacity
+                onPress={() => navigation.navigate("card")}
+                activeOpacity={1}
               >
-                + Add New Card
-              </RNText>
-            </RNView>
-          </TouchableOpacity>
+                <RNView style={styles.newCard}>
+                  <RNText fontWeight="medium" style={externalStyles.txtMd} color="primary">
+                    + Add New Card
+                  </RNText>
+                </RNView>
+              </TouchableOpacity>
+            </>
+          )}
 
           <Button
             onPress={() => navigation.navigate("confirm")}
@@ -193,6 +223,23 @@ const PlaceOrder = ({ navigation }) => {
           />
         </View>
       </ScrollView>
+
+      <DateTimePickerModal
+        isVisible={showPickupPicker}
+        mode="datetime"
+        date={pickupDate}
+        onConfirm={handlePickupConfirm}
+        onCancel={() => setShowPickupPicker(false)}
+        minimumDate={new Date()}
+      />
+      <DateTimePickerModal
+        isVisible={showDeliveryPicker}
+        mode="datetime"
+        date={deliveryDate}
+        onConfirm={handleDeliveryConfirm}
+        onCancel={() => setShowDeliveryPicker(false)}
+        minimumDate={new Date(Date.now() + 24 * 60 * 60 * 1000)}
+      />
     </>
   );
 };
@@ -208,15 +255,11 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingTop: 10,
   },
-  top: {
+  topContainer: {
+    width: "49%",
     flexDirection: "row",
-    alignItems: "center",
+    paddingVertical: 17,
     justifyContent: "space-between",
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   left: {
     gap: 8,
@@ -230,12 +273,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-  },
-  topContainer: {
-    width: "49%",
-    flexDirection: "row",
-    paddingVertical: 17,
-    justifyContent: "space-between",
   },
   location: {
     flexDirection: "row",
@@ -259,7 +296,6 @@ const styles = StyleSheet.create({
     borderStartStartRadius: primarBorderRadius,
     borderStartEndRadius: primarBorderRadius,
     paddingHorizontal: 10,
-
     elevation: 1,
   },
   apply: {
@@ -287,8 +323,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
+    borderRadius: primarBorderRadius,
+    elevation: 1,
+    backgroundColor: colors.white,
+   
   },
-
   payment: {
     flexDirection: "row",
     alignItems: "center",
@@ -296,6 +335,11 @@ const styles = StyleSheet.create({
   },
   method: {
     gap: 10,
+  },
+  paymentOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: primarBorderRadius,
   },
   imgContainer: {
     width: 42,

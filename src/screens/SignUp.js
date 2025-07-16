@@ -6,19 +6,16 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import colors, { externalStyles } from "../utils/Theme";
 import logo from "../../assets/images/global/logo.svg";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
-import {
-  horizantGap,
-  primaryHeight,
-} from "../utils/Constant";
+import { horizantGap, primaryHeight } from "../utils/Constant";
 import Button from "../components/ui/Button";
 import email from "../../assets/icons/email.svg";
 import apple from "../../assets/icons/apple.svg";
 import google from "../../assets/icons/google.svg";
-
 import uaeFlag from "../../assets/images/flags/uae-flag.svg";
 import Divider from "../components/auth/Divider";
 import RNTextInput from "../components/ui/RNTextInput";
@@ -67,6 +64,7 @@ const SignUp = ({ navigation }) => {
     termsAccepted: false,
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // New loading state
   const scrollViewRef = useRef(null);
   const inputRefs = useRef({});
 
@@ -96,6 +94,7 @@ const SignUp = ({ navigation }) => {
 
   const handleRegister = async () => {
     try {
+      setLoading(true); // Set loading to true when API call starts
       await registerSchema.validate(formData, { abortEarly: false });
       await axios.post(`${API_URL}/register`, formData);
 
@@ -133,6 +132,8 @@ const SignUp = ({ navigation }) => {
           text2: error.response?.data?.message || "Something went wrong",
         });
       }
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -281,16 +282,15 @@ const SignUp = ({ navigation }) => {
               style={styles.checkContainer}
               onPress={handleCheckboxToggle}
             >
-              <View
-                style={[
-                  styles.checkboxBox,
-                  formData.termsAccepted && styles.checkboxChecked,
-                ]}
-              >
-                {formData.termsAccepted && (
-                  <RNText style={styles.checkboxTick}>✔</RNText>
-                )}
-              </View>
+              <MaterialIcons
+                name={
+                  formData.termsAccepted
+                    ? "check-box"
+                    : "check-box-outline-blank"
+                }
+                size={18}
+                color={colors.primary}
+              />
               <RNText>I agree to the Terms and Privacy Policy.</RNText>
             </TouchableOpacity>
             {errors.termsAccepted && (
@@ -301,6 +301,7 @@ const SignUp = ({ navigation }) => {
               onPress={handleRegister}
               title="Sign up"
               variant="gradient"
+              loading={loading} 
             />
 
             <View style={styles.haveAccount}>
@@ -324,7 +325,9 @@ const SignUp = ({ navigation }) => {
 export default SignUp;
 
 const styles = StyleSheet.create({
-  layoutContainer: { flex: 1 },
+  layoutContainer: {
+    flex: 1,
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: colors.background,
@@ -359,38 +362,16 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 0,
-   
   },
   checkContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
   },
-  checkboxBox: {
-    width: 18,
-    height: 18,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 3,
-  },
-
-  checkboxChecked: {
-    backgroundColor: colors.white,
-    borderColor: colors.primary,
-  },
-
-  checkboxTick: {
-    color: colors.primary,
-    fontSize: 10,
-    marginLeft: 2,
-    marginBottom: 2,
-  },
-
   haveAccount: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent:"center",
     gap: 5,
     paddingBottom: 50,
   },
@@ -401,6 +382,6 @@ const styles = StyleSheet.create({
   },
   errorBorder: {
     borderColor: "red",
-    borderWidth:1,
+    borderWidth: 1,
   },
 });

@@ -15,6 +15,7 @@ import Payment from "../screens/Payment";
 import Card from "../screens/Card";
 import Wallet from "../screens/Wallet";
 import Location from "../screens/Location";
+import ChangePassword from "../screens/ChangePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const MainStack = () => (
     <Stack.Screen name="card" component={Card} />
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
+    <Stack.Screen name="change" component={ChangePassword} />
   </Stack.Navigator>
 );
 

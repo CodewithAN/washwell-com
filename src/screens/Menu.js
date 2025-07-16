@@ -35,6 +35,7 @@ const Menu = ({ navigation }) => {
     { title: "Wallet", icon: WalletIcon, screen: "wallet" },
     { title: "Refer a Friend", icon: ReferIcon, screen: "refer" },
     { title: "Choose Language", icon: LanguageIcon, screen: "home" },
+    { title: "Change Password", icon: LanguageIcon, screen: "change" },
     { title: "Support Center", icon: SupportIcon, screen: "home" },
     { title: "Sign Out", icon: LogoutIcon, screen: "home" },
   ];

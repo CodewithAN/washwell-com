@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Img from "./Img";
 import RNText from "./RNText";
@@ -19,6 +19,7 @@ const Button = ({
   style,
   shadow = false,
   disabled = false,
+  loading = false,
 }) => {
   const buttonStyles = [
     styles.button,
@@ -27,7 +28,6 @@ const Button = ({
     variant === "mid-blue" && styles.midBlue,
     variant === "white" && styles.white,
     disabled && styles.disabled,
-
     style,
   ];
 
@@ -43,7 +43,7 @@ const Button = ({
     <TouchableOpacity
       style={[{ height, width: "100%", elevation: shadow ? 1 : 0 }]}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
       activeOpacity={0.7}
     >
       <View style={[styles.container]}>
@@ -55,14 +55,36 @@ const Button = ({
             style={[buttonStyles, { height }]}
           >
             <View style={styles.content}>
-              {source && <Img source={source} style={styles.image} />}
-              <RNText style={textStyles}>{title}</RNText>
+              {loading ? (
+                <>
+                  <ActivityIndicator size="small" color="#FFF" />
+                  <RNText style={[textStyles, { marginLeft: 12 }]}>{title}</RNText>
+                </>
+              ) : (
+                <>
+                  {source && <Img source={source} style={styles.image} />}
+                  <RNText style={textStyles}>{title}</RNText>
+                </>
+              )}
             </View>
           </LinearGradient>
         ) : (
           <View style={[buttonStyles, { height }]}>
-            {source && <Img source={source} style={styles.image} />}
-            <RNText style={textStyles}>{title}</RNText>
+            {loading ? (
+              <>
+                <ActivityIndicator
+                  size="small"
+                  color={variant === "white" ? "#000" : "#FFF"}
+                  style={{ marginRight: 12 }}
+                />
+                <RNText style={textStyles}>{title}</RNText>
+              </>
+            ) : (
+              <>
+                {source && <Img source={source} style={styles.image} />}
+                <RNText style={textStyles}>{title}</RNText>
+              </>
+            )}
           </View>
         )}
       </View>
