@@ -7,6 +7,7 @@ const Context = (props) => {
   const [user, setUser] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [otp, setOtp] = useState(null);
 
   const contextValue = {
     token,
@@ -17,6 +18,8 @@ const Context = (props) => {
     setSelectedLanguage,
     phoneNumber,
     setPhoneNumber,
+    otp,
+    setOtp,
   };
 
   return (

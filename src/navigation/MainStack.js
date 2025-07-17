@@ -41,6 +41,7 @@ const MainStack = () => (
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
     <Stack.Screen name="change" component={ChangePassword} />
+
   </Stack.Navigator>
 );
 

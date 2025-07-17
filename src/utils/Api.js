@@ -1,9 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { API_URL } from "./Constant";
+
 
 export const axiosInstance = async () => {
   const token = await AsyncStorage.getItem("washwell-token");
+  console.log("Token:", token);
   return axios.create({
+    baseURL:API_URL,
     headers: {
       Authorization: `Bearer ${token}`,
       "content-type": "application/json",

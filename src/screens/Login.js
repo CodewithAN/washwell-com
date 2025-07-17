@@ -7,7 +7,7 @@ import RNTextInput from "../components/ui/RNTextInput";
 import { API_URL, horizantGap } from "../utils/Constant";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
@@ -27,18 +27,24 @@ const loginSchema = Yup.object().shape({
 const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const { setToken, setUser } = useContext(ContextProvider);
+  const inputRefs = useRef({});
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value.trim() }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  const handleFocus = (field) => {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
   const handleLogin = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       await loginSchema.validate(formData, { abortEarly: false });
+
       const response = await axios.post(`${API_URL}/login`, formData);
 
       Toast.show({
@@ -47,14 +53,18 @@ const Login = ({ navigation }) => {
         text2: "Welcome back! Login successful.",
         topOffset: 10,
       });
-      let data = response?.data?.data;
-      console.log(data, "data...");
-      let user = data?.user;
-      let token = data?.token;
+
+      const data = response?.data?.data;
+      const user = data?.user;
+      const token = data?.token;
+
       setUser(user);
       setToken(token);
-      await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+
+
+      await AsyncStorage.setItem("washwell-token", token);
       await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = { email: "", password: "" };
@@ -82,7 +92,7 @@ const Login = ({ navigation }) => {
         });
       }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -91,6 +101,7 @@ const Login = ({ navigation }) => {
       <View>
         <Img source={logo} width={60 * vw} height={70} />
       </View>
+
       <View style={styles.inputContainer}>
         <View>
           <RNTextInput
@@ -98,33 +109,47 @@ const Login = ({ navigation }) => {
             value={formData.email}
             onChangeText={(text) => handleChange("email", text)}
             keyboardType="email-address"
-            style={[errors.email && styles.errorBorder]}
+            onFocus={() => handleFocus("email")}
+            ref={(ref) => (inputRefs.current["email"] = ref)}
+            style={[styles.input, errors.email ? styles.errorBorder : null]}
           />
-          {errors.email && <RNText style={styles.error}>{errors.email}</RNText>}
+          {errors.email && (
+            <RNText style={styles.error}>{errors.email}</RNText>
+          )}
         </View>
+
         <View>
           <RNTextInput
             placeholder="Password"
             secure
             value={formData.password}
             onChangeText={(text) => handleChange("password", text)}
-            style={[errors.password && styles.errorBorder]}
+            onFocus={() => handleFocus("password")}
+            ref={(ref) => (inputRefs.current["password"] = ref)}
+            style={[styles.input, errors.password ? styles.errorBorder : null]}
           />
           {errors.password && (
             <RNText style={styles.error}>{errors.password}</RNText>
           )}
         </View>
-        <TouchableOpacity style={styles.forgetButton} activeOpacity={0.7}>
+
+        <TouchableOpacity
+          style={styles.forgetButton}
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate("password")}
+        >
           <RNText color="primary">Forget Password?</RNText>
         </TouchableOpacity>
+
         <Button
           onPress={handleLogin}
           style={styles.btn}
           title="Login"
           variant="gradient"
-          loading={loading} 
+          loading={loading}
         />
       </View>
+
       <View style={styles.donotHaveAccount}>
         <RNText>Don't have an account?</RNText>
         <TouchableOpacity
@@ -172,6 +197,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 5,
+  },
+  input: {
+    borderWidth: 0, 
   },
   errorBorder: {
     borderColor: "red",
