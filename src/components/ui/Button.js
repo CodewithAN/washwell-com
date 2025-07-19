@@ -56,10 +56,7 @@ const Button = ({
           >
             <View style={styles.content}>
               {loading ? (
-                <>
-                  <ActivityIndicator size="small" color="#FFF" />
-                  <RNText style={[textStyles, { marginLeft: 12 }]}>{title}</RNText>
-                </>
+                <ActivityIndicator size="small" color="#FFF" />
               ) : (
                 <>
                   {source && <Img source={source} style={styles.image} />}
@@ -71,14 +68,10 @@ const Button = ({
         ) : (
           <View style={[buttonStyles, { height }]}>
             {loading ? (
-              <>
-                <ActivityIndicator
-                  size="small"
-                  color={variant === "white" ? "#000" : "#FFF"}
-                  style={{ marginRight: 12 }}
-                />
-                <RNText style={textStyles}>{title}</RNText>
-              </>
+              <ActivityIndicator
+                size="small"
+                color={variant === "white" ? "#000" : "#FFF"}
+              /> 
             ) : (
               <>
                 {source && <Img source={source} style={styles.image} />}

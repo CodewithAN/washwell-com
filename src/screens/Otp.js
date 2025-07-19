@@ -1,6 +1,17 @@
-import { StyleSheet, View, TextInput } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, API_URL, primarBorderRadius } from "../utils/Constant";
+import {
+  horizantGap,
+  API_URL,
+  primarBorderRadius,
+} from "../utils/Constant";
 import Header from "../components/global/Header";
 import Img from "../components/ui/Img";
 import logo from "../../assets/images/global/logo.svg";
@@ -8,133 +19,172 @@ import { vw } from "../utils/ScreenSize";
 import RNText from "../components/ui/RNText";
 import RNTextInput from "../components/ui/RNTextInput";
 import Button from "../components/ui/Button";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { ContextProvider } from "../global/Context";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Yup from "yup";
+
+const otpSchema = Yup.object().shape({
+  code: Yup.string()
+    .matches(/^\d{6}$/, "OTP must be exactly 6 digits")
+    .required("OTP is required"),
+});
 
 const Otp = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRefs = useRef([]);
   const navigation = useNavigation();
-  const { phoneNumber, setOtp: setContextOtp } = useContext(ContextProvider);
+  const { phoneNumber, setUser, setToken } = useContext(ContextProvider);
 
- 
-  console.log("Phone Number from Context:", phoneNumber);
+  const handleOtpChange = (index, value) => {
+    if (/^\d?$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+      setError("");
 
-  const handleInputChange = (text, index) => {
-    if (text.length > 1) return;
-    const newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
-
-    
-    if (text && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
-
-   
-    if (index === 5 && text && newOtp.every((digit) => digit !== "")) {
-      verifyOtp(newOtp.join(""));
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
     }
   };
 
-  const handleKeyPress = (e, index) => {
-   
-    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+  const handleKeyPress = (index, key) => {
+    if (key === "Backspace") {
+      const newOtp = [...otp];
+      if (newOtp[index] !== "") {
+        newOtp[index] = "";
+        setOtp(newOtp);
+      } else if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
     }
   };
 
-  const verifyOtp = async (otpCode) => {
-    if (!phoneNumber) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Phone number not found",
-      });
-      return;
-    }
+  const getOtpCode = () => otp.join("");
 
-    setLoading(true);
+  useEffect(() => {
+    const code = getOtpCode();
+    if (code.length === 6 && /^\d{6}$/.test(code)) {
+      handleVerify();
+    }
+  }, [otp]);
+
+  const handleVerify = async () => {
+    const code = getOtpCode();
     try {
-      await axios.post(`${API_URL}/verify-otp`, {
+      setLoading(true);
+      await otpSchema.validate({ code }, { abortEarly: false });
+
+      if (!phoneNumber) throw new Error("Phone number is missing");
+
+      const response = await axios.post(`${API_URL}/verify-otp`, {
         phone_number: phoneNumber,
-        code: otpCode,
+        code,
       });
 
-      setContextOtp(otpCode);
+      const data = response?.data?.data;
+      const user = data?.user;
+      const token = data?.token;
 
-    
-      navigation.navigate("reset");
-    } catch (error) {
+      setUser(user);
+      setToken(token);
+
+      await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+      await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+
       Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: error.response?.data?.message || "Failed to verify OTP",
+        type: "success",
+        text1: "Logged In Successfully",
       });
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+
+      if (error.name === "ValidationError") {
+        setError(error.errors[0]);
+        Toast.show({
+          type: "error",
+          text1: "Validation Error",
+          text2: error.errors[0],
+        });
+      } else {
+        setError(message);
+        Toast.show({
+          type: "error",
+          text1: "Verification Failed",
+          text2: message,
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <Header space />
-      <View style={styles.mainContainer}>
-        <View>
-          <Img source={logo} width={60 * vw} height={70} />
-        </View>
-        <View style={styles.container}>
-          <RNText
-            color="primary"
-            fontWeight="medium"
-            style={[externalStyles.txtLg, styles.otpText]}
-          >
-            Verify OTP
-          </RNText>
-          <RNText style={styles.plainText}>
-            Enter the OTP sent to your phone number
-          </RNText>
-
-          <View style={styles.inputContainer}>
-            {otp.map((digit, index) => (
-              <TextInput
-                key={index}
-                value={digit}
-                onChangeText={(text) => handleInputChange(text, index)}
-                onKeyPress={(e) => handleKeyPress(e, index)}
-                ref={(ref) => (inputRefs.current[index] = ref)}
-                style={styles.otpInput}
-                keyboardType="numeric"
-                maxLength={1}
-                textAlign="center"
-              />
-            ))}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Header space />
+        <View style={styles.mainContainer}>
+          <View>
+            <Img source={logo} width={60 * vw} height={70} />
           </View>
+          <View style={styles.container}>
+            <RNText
+              color="primary"
+              fontWeight="medium"
+              style={[externalStyles.txtLg, styles.otpText]}
+            >
+              Verify OTP
+            </RNText>
+            <RNText style={styles.plainText}>
+              Enter the OTP sent to your phone number
+            </RNText>
 
-          <Button
-            title="Verify"
-            variant="gradient"
-            onPress={() => {
-              if (otp.every((digit) => digit !== "")) {
-                verifyOtp(otp.join(""));
-              } else {
-                Toast.show({
-                  type: "error",
-                  text1: "Error",
-                  text2: "Please enter all 6 digits",
-                });
-              }
-            }}
-            loading={loading}
-          />
+            <View style={styles.inputContainer}>
+              {otp.map((digit, index) => (
+                <TextInput
+                  key={index}
+                  value={digit}
+                  onChangeText={(value) => handleOtpChange(index, value)}
+                  onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
+                  ref={(ref) => (inputRefs.current[index] = ref)}
+                  style={[styles.otpInput, error && styles.errorBorder]}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  textAlign="center"
+                  autoFocus={index === 0}
+                />
+              ))}
+            </View>
+
+            {error ? <RNText style={styles.error}>{error}</RNText> : null}
+
+            <Button
+              title="Verify"
+              variant="gradient"
+              onPress={handleVerify}
+              loading={loading}
+            />
+          </View>
         </View>
-      </View>
-      <Toast />
-    </>
+        <Toast />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -147,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: horizantGap,
     gap: 15,
+    paddingBottom: 50, 
   },
   container: {
     gap: 20,
@@ -160,16 +211,32 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   inputContainer: {
-    width: "12.8%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
     alignSelf: "center",
+    width: "100%", 
   },
   otpInput: {
     backgroundColor: colors.white,
     borderRadius: primarBorderRadius,
     paddingHorizontal: 18,
+    paddingVertical: 10,
+    textAlign: "center",
+    fontSize: 18,
+    width: 45,
+    borderWidth: 0,
+   
+  },
+  errorBorder: {
+    borderColor: "red",
+    borderWidth: 1,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: "center",
   },
 });

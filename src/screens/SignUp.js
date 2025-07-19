@@ -5,13 +5,14 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors, { externalStyles } from "../utils/Theme";
 import logo from "../../assets/images/global/logo.svg";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
-import { horizantGap, primaryHeight } from "../utils/Constant";
+import { horizantGap, primaryHeight, API_URL } from "../utils/Constant";
 import Button from "../components/ui/Button";
 import email from "../../assets/icons/email.svg";
 import apple from "../../assets/icons/apple.svg";
@@ -25,31 +26,18 @@ import React, { useState, useContext, useRef } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
-import { API_URL } from "../utils/Constant";
 import { ContextProvider } from "../global/Context";
 
 const registerSchema = Yup.object().shape({
   name: Yup.string().trim().required("Name is required"),
-  email: Yup.string()
-    .trim()
-    .email("Invalid email")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+  email: Yup.string().trim().email("Invalid email").required("Email is required"),
+  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
   password_confirmation: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords do not match")
     .required("Confirm password is required"),
-  phone_number: Yup.string()
-    .matches(
-      /^\+\d{4,14}$/,
-      "Phone number must start with + and have 4-14 digits"
-    )
-    .required("Phone number is required"),
+  phone_number: Yup.string().required("Phone number is required"),
   referred_by: Yup.string().trim().optional(),
-  termsAccepted: Yup.boolean()
-    .oneOf([true], "You must accept the Terms and Privacy Policy")
-    .required("You must accept the Terms and Privacy Policy"),
+  termsAccepted: Yup.boolean().oneOf([true], "You must accept the Terms and Privacy Policy"),
 });
 
 const SignUp = ({ navigation }) => {
@@ -64,9 +52,10 @@ const SignUp = ({ navigation }) => {
     termsAccepted: false,
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
+
   const scrollViewRef = useRef(null);
-  const inputRefs = useRef({});
+  const inputLayouts = useRef({});
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({
@@ -85,25 +74,25 @@ const SignUp = ({ navigation }) => {
   };
 
   const handleFocus = (field) => {
-    if (inputRefs.current[field] && scrollViewRef.current) {
-      inputRefs.current[field].measure((x, y, width, height, pageX, pageY) => {
-        scrollViewRef.current.scrollTo({ y: pageY - 100, animated: true });
-      });
-    }
+    setTimeout(() => {
+      const layout = inputLayouts.current[field];
+      if (layout && scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: layout.y - 80, animated: true });
+      }
+    }, 100);
   };
 
   const handleRegister = async () => {
     try {
-      setLoading(true); // Set loading to true when API call starts
+      setLoading(true);
       await registerSchema.validate(formData, { abortEarly: false });
       await axios.post(`${API_URL}/register`, formData);
-
       setPhoneNumber(formData.phone_number);
 
       Toast.show({
         type: "success",
         text1: "Success",
-        text2: "Welcome! Please Verify Otp.",
+        text2: "Welcome! Please Verify OTP.",
       });
 
       navigation.navigate("verification");
@@ -120,8 +109,8 @@ const SignUp = ({ navigation }) => {
           text2: error.inner.map((err) => err.message).join(", "),
         });
       } else {
-        const newErrors = {};
         const backendErrors = error.response?.data?.errors || {};
+        const newErrors = {};
         Object.entries(backendErrors).forEach(([key, messages]) => {
           newErrors[key] = messages.join(", ");
         });
@@ -133,15 +122,15 @@ const SignUp = ({ navigation }) => {
         });
       }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
     <KeyboardAvoidingView
-      style={{ flexGrow: 1 }}
+      style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
     >
       <ScrollView
         style={styles.layoutContainer}
@@ -153,106 +142,44 @@ const SignUp = ({ navigation }) => {
           <Img source={logo} width={60 * vw} height={70} />
           <View style={styles.container}>
             <View style={styles.buttonContainer}>
-              <Button
-                source={google}
-                variant="white"
-                title="Sign up with Google"
-              />
-              <Button
-                source={email}
-                variant="white"
-                onPress={() => navigation.navigate("login")}
-                title="Log in with Email"
-              />
-              <Button
-                source={apple}
-                variant="white"
-                title="Log in with Apple"
-              />
+              <Button source={google} variant="white" title="Sign up with Google" />
+              <Button source={email} variant="white" onPress={() => navigation.navigate("login")} title="Log in with Email" />
+              <Button source={apple} variant="white" title="Log in with Apple" />
             </View>
             <Divider />
+
             <View style={styles.inputContainer}>
-              <View>
-                <RNTextInput
-                  placeholder="Name"
-                  value={formData.name}
-                  onChangeText={(text) => handleChange("name", text)}
-                  onFocus={() => handleFocus("name")}
-                  ref={(ref) => (inputRefs.current["name"] = ref)}
-                  style={[styles.input, errors.name && styles.errorBorder]}
-                />
-                {errors.name && (
-                  <RNText style={styles.error}>{errors.name}</RNText>
-                )}
-              </View>
-              <View>
-                <RNTextInput
-                  placeholder="Email"
-                  value={formData.email}
-                  onChangeText={(text) => handleChange("email", text)}
-                  keyboardType="email-address"
-                  onFocus={() => handleFocus("email")}
-                  ref={(ref) => (inputRefs.current["email"] = ref)}
-                  style={[styles.input, errors.email && styles.errorBorder]}
-                />
-                {errors.email && (
-                  <RNText style={styles.error}>{errors.email}</RNText>
-                )}
-              </View>
-              <View>
-                <RNTextInput
-                  placeholder="Referral Code"
-                  value={formData.referred_by}
-                  onChangeText={(text) => handleChange("referred_by", text)}
-                  onFocus={() => handleFocus("referred_by")}
-                  ref={(ref) => (inputRefs.current["referred_by"] = ref)}
-                  style={[
-                    styles.input,
-                    errors.referred_by && styles.errorBorder,
-                  ]}
-                />
-                {errors.referred_by && (
-                  <RNText style={styles.error}>{errors.referred_by}</RNText>
-                )}
-              </View>
-              <View>
-                <RNTextInput
-                  placeholder="Password"
-                  secure
-                  value={formData.password}
-                  onChangeText={(text) => handleChange("password", text)}
-                  onFocus={() => handleFocus("password")}
-                  ref={(ref) => (inputRefs.current["password"] = ref)}
-                  style={[styles.input, errors.password && styles.errorBorder]}
-                />
-                {errors.password && (
-                  <RNText style={styles.error}>{errors.password}</RNText>
-                )}
-              </View>
-              <View>
-                <RNTextInput
-                  placeholder="Confirm Password"
-                  secure
-                  value={formData.password_confirmation}
-                  onChangeText={(text) =>
-                    handleChange("password_confirmation", text)
-                  }
-                  onFocus={() => handleFocus("password_confirmation")}
-                  ref={(ref) =>
-                    (inputRefs.current["password_confirmation"] = ref)
-                  }
-                  style={[
-                    styles.input,
-                    errors.password_confirmation && styles.errorBorder,
-                  ]}
-                />
-                {errors.password_confirmation && (
-                  <RNText style={styles.error}>
-                    {errors.password_confirmation}
-                  </RNText>
-                )}
-              </View>
-              <View>
+              {[
+                { name: "name", placeholder: "Name" },
+                { name: "email", placeholder: "Email", keyboardType: "email-address" },
+                { name: "referred_by", placeholder: "Referral Code" },
+                { name: "password", placeholder: "Password", secure: true },
+                { name: "password_confirmation", placeholder: "Confirm Password", secure: true },
+              ].map(({ name, placeholder, keyboardType, secure }) => (
+                <View
+                  key={name}
+                  onLayout={(e) => {
+                    inputLayouts.current[name] = e.nativeEvent.layout;
+                  }}
+                >
+                  <RNTextInput
+                    placeholder={placeholder}
+                    value={formData[name]}
+                    onChangeText={(text) => handleChange(name, text)}
+                    keyboardType={keyboardType}
+                    secure={secure}
+                    onFocus={() => handleFocus(name)}
+                    style={[styles.input, errors[name] && styles.errorBorder]}
+                  />
+                  {errors[name] && <RNText style={styles.error}>{errors[name]}</RNText>}
+                </View>
+              ))}
+
+              <View
+                onLayout={(e) => {
+                  inputLayouts.current["phone_number"] = e.nativeEvent.layout;
+                }}
+              >
                 <View style={styles.mobileNumberContainer}>
                   <RNView style={styles.flagContainer}>
                     <Img source={uaeFlag} width={22} height={22} />
@@ -265,51 +192,28 @@ const SignUp = ({ navigation }) => {
                     onChangeText={(text) => handleChange("phone_number", text)}
                     maxLength={14}
                     onFocus={() => handleFocus("phone_number")}
-                    ref={(ref) => (inputRefs.current["phone_number"] = ref)}
-                    style={[
-                      styles.input,
-                      errors.phone_number && styles.errorBorder,
-                    ]}
+                    style={[styles.input, errors.phone_number && styles.errorBorder]}
                   />
                 </View>
-                {errors.phone_number && (
-                  <RNText style={styles.error}>{errors.phone_number}</RNText>
-                )}
+                {errors.phone_number && <RNText style={styles.error}>{errors.phone_number}</RNText>}
               </View>
             </View>
 
-            <TouchableOpacity
-              style={styles.checkContainer}
-              onPress={handleCheckboxToggle}
-            >
+            <TouchableOpacity style={styles.checkContainer} onPress={handleCheckboxToggle}>
               <MaterialIcons
-                name={
-                  formData.termsAccepted
-                    ? "check-box"
-                    : "check-box-outline-blank"
-                }
+                name={formData.termsAccepted ? "check-box" : "check-box-outline-blank"}
                 size={18}
                 color={colors.primary}
               />
               <RNText>I agree to the Terms and Privacy Policy.</RNText>
             </TouchableOpacity>
-            {errors.termsAccepted && (
-              <RNText style={styles.error}>{errors.termsAccepted}</RNText>
-            )}
+            {errors.termsAccepted && <RNText style={styles.error}>{errors.termsAccepted}</RNText>}
 
-            <Button
-              onPress={handleRegister}
-              title="Sign up"
-              variant="gradient"
-              loading={loading} 
-            />
+            <Button onPress={handleRegister} title="Sign up" variant="gradient" loading={loading} />
 
             <View style={styles.haveAccount}>
               <RNText>Have an account?</RNText>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("login")}
-                activeOpacity={0.7}
-              >
+              <TouchableOpacity onPress={() => navigation.navigate("login")} activeOpacity={0.7}>
                 <RNText fontWeight="medium" color="primary">
                   Log in
                 </RNText>
@@ -371,7 +275,7 @@ const styles = StyleSheet.create({
   haveAccount: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:"center",
+    justifyContent: "center",
     gap: 5,
     paddingBottom: 50,
   },

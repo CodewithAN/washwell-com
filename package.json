@@ -29,6 +29,8 @@
     "react-native": "0.79.5",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-hr": "^1.1.4",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-modal": "^14.0.0-rc.1",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-raw-bottom-sheet": "^3.0.0",
     "react-native-safe-area-context": "5.4.0",

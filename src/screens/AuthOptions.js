@@ -22,12 +22,7 @@ import axios from "axios";
 import { ContextProvider } from "../global/Context";
 
 const phoneSchema = Yup.object().shape({
-  phone_number: Yup.string()
-    .matches(
-      /^\+\d{4,14}$/,
-      "Phone number must start with + and have 4-14 digits"
-    )
-    .required("Phone number is required"),
+  phone_number: Yup.string().required("Phone number is required"),
 });
 
 const AuthOptions = ({ navigation }) => {
@@ -37,10 +32,7 @@ const AuthOptions = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
-    const cleanedValue = String(value)
-      .replace(/[^\+\d]/g, "")
-      .slice(0, 14);
-    setFormData({ ...formData, [name]: cleanedValue });
+    setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
 

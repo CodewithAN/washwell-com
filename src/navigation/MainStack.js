@@ -16,13 +16,14 @@ import Card from "../screens/Card";
 import Wallet from "../screens/Wallet";
 import Location from "../screens/Location";
 import ChangePassword from "../screens/ChangePassword";
+import AddAddress from "../screens/AddAddress";
 
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-    initialRouteName="home"
+    initialRouteName="address"
   >
     <Stack.Screen name="enable" component={Enable} />
     <Stack.Screen name="choose" component={Choose} />
@@ -32,6 +33,7 @@ const MainStack = () => (
     <Stack.Screen name="notification" component={Notifications} />
     <Stack.Screen name="detail" component={Details} />
     <Stack.Screen name="address" component={Address} />
+    <Stack.Screen name="add" component={AddAddress} />
     <Stack.Screen name="cart" component={Cart} />
     <Stack.Screen name="confirm" component={Confirmation} />
     <Stack.Screen name="place-order" component={PlaceOrder} />
@@ -41,6 +43,7 @@ const MainStack = () => (
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
     <Stack.Screen name="change" component={ChangePassword} />
+    
 
   </Stack.Navigator>
 );

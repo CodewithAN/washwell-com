@@ -1,89 +1,229 @@
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
-import Header from "../components/global/Header";
-import RNText from "../components/ui/RNText";
-import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, txtXs } from "../utils/Constant";
-import Img from "../components/ui/Img";
-import person from "../../assets/menu/personal.png";
-import details from "../../assets/icons/detail.svg";
-import Button from "../components/ui/Button";
-import RNTextInput from "../components/ui/RNTextInput";
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { axiosInstance } from '../utils/Api';
+import Header from '../components/global/Header';
+import RNText from '../components/ui/RNText';
+import colors, { externalStyles } from '../utils/Theme';
+import { horizantGap, txtXs } from '../utils/Constant';
+import Img from '../components/ui/Img';
+import person from '../../assets/menu/personal.png';
+import details from '../../assets/icons/detail.svg';
+import Button from '../components/ui/Button';
+import RNTextInput from '../components/ui/RNTextInput';
+import { ContextProvider } from '../global/Context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import { API_URL } from '../utils/Constant';
 
-const Details = () => {
-  return (
-    <>
-      <Header space title="Personal Details" />
-      <View style={styles.mainContainer}>
-        <View style={styles.images}>
-          <Img source={person} width={46} height={46} />
-          <Img source={details} width={20} height={20} />
-        </View>
+const Profile = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [globalError, setGlobalError] = useState(null);
+  const { token, setToken } = useContext(ContextProvider);
 
-        <View style={styles.details}>
-          <RNTextInput placeholder="Shahid" label={"First Name"} />
-          <RNTextInput placeholder="Abid" label={"Last Name"} />
-          <RNTextInput placeholder="shahidabid94@gmail.com" label={"Email"} />
-          <RNTextInput placeholder="+971 8800850641" label={"Phone Number"} />
-          <RNTextInput placeholder="Change Password" />
-          <TouchableOpacity activeOpacity={0.7}>
-            <RNText style={styles.link}>Change Address</RNText>
-          </TouchableOpacity>
-        </View>
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        let storedToken = token;
+        if (!storedToken) {
+          storedToken = await AsyncStorage.getItem('washwell-token');
+          if (storedToken) setToken(storedToken);
+        }
 
-        <TouchableOpacity activeOpacity={0.7}>
-          <Button title={"Confirm"} variant="gradient" style={styles.button} />
-        </TouchableOpacity>
+        if (!storedToken) {
+          setGlobalError('Authentication token not found. Please log in again.');
+          setLoading(false);
+          return;
+        }
+
+        const instance = await axiosInstance();
+        const response = await instance.get("/get-profile", {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+
+        const profileData = response.data.data.user;
+        const fullName = profileData.name || '';
+        const nameParts = fullName.trim().split(' ');
+
+        setFirstName(nameParts[0] || '');
+        setLastName(nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
+        setEmail(profileData.email || '');
+        setPhoneNumber(profileData.phone || '');
+        setGlobalError(null);
+      } catch (err) {
+        setGlobalError(
+          err.response?.data?.message || 'Failed to fetch profile. Please try again.'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [token]);
+
+  const handleUpdateProfile = async () => {
+    setPhoneError('');
+    setGlobalError(null);
+
+    if (!phoneNumber.trim()) {
+      setPhoneError('Phone number is required');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const instance = await axiosInstance();
+      await instance.post(
+        "/update-profile",
+        {
+          name: `${firstName} ${lastName}`.trim(),
+          email,
+          phone_number: phoneNumber,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${
+              token || (await AsyncStorage.getItem('washwell-token'))
+            }`,
+          },
+        }
+      );
+
+      Toast.show({
+        type: 'success',
+        text1: 'Profile updated successfully',
+      });
+    } catch (err) {
+      setGlobalError(
+        err.response?.data?.message || 'Failed to update profile. Please try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
+
+  if (globalError) {
+    return (
+      <View style={styles.errorContainer}>
+        <RNText style={styles.errorText}>{globalError}</RNText>
       </View>
-    </>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <View style={styles.mainContainer}>
+        <Header space title="Personal Details" />
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.images}>
+            <Img source={person} width={46} height={46} />
+            <Img source={details} width={20} height={20} />
+          </View>
+
+          <View style={styles.details}>
+            <RNTextInput label="First Name" value={firstName} onChangeText={setFirstName} />
+            <RNTextInput label="Last Name" value={lastName} onChangeText={setLastName} />
+            <RNTextInput label="Email" value={email} onChangeText={setEmail} />
+            <RNTextInput
+              label="Phone Number"
+              value={phoneNumber}
+              onChangeText={text => {
+                setPhoneNumber(text);
+                if (text.trim()) setPhoneError('');
+              }}
+            />
+            {phoneError ? (
+              <RNText style={styles.inlineError}>{phoneError}</RNText>
+            ) : null}
+          </View>
+        </ScrollView>
+
+        <View style={styles.buttonWrapper}>
+          <Button
+            title="Update Profile"
+            variant="gradient"
+            onPress={handleUpdateProfile}
+            loading={loading}
+            disabled={loading}
+          />
+        </View>
+
+        <Toast />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
-export default Details;
+export default Profile;
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "13%",
+  },
+  scrollContent: {
+    paddingBottom: 20,
     gap: 20,
     paddingTop: 10,
   },
-  top: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   images: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   details: {
     gap: 8,
     flex: 1,
   },
-
-  input: {
-    paddingVertical: 11,
+  buttonWrapper: {
+    paddingHorizontal: horizantGap,
+    paddingBottom: 20,
   },
-  link: {
-    textAlign: "right",
-    color: colors.primary,
-    textDecorationLine: "underline",
-    textDecorationColor: colors.primary,
+  inlineError: {
+    color: 'red',
     fontSize: txtXs,
-    fontWeight: "semiBold",
+    marginTop: -6,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  loadingScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    fontSize: txtXs,
+    color: 'red',
+    textAlign: 'center',
   },
 });

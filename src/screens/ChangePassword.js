@@ -10,6 +10,7 @@ import RNText from "../components/ui/RNText";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { axiosInstance } from "../utils/Api";
+import Header from "../components/global/Header";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -101,15 +102,10 @@ const ChangePassword = () => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Img source={logo} width={60 * vw} height={70} />
-      </View>
-
-      <View>
-        <RNText style={externalStyles.txtLg} color="primary">
-          Change Password
-        </RNText>
-      </View>
+     
+    
+        <Header space title="Change Password" />
+   
 
       <View style={styles.inputContainer}>
         <View>
@@ -186,7 +182,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     width: "100%",
     paddingHorizontal: horizantGap,
