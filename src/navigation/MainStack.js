@@ -23,11 +23,7 @@ const Stack = createNativeStackNavigator();
 const MainStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
-<<<<<<< Updated upstream
-    initialRouteName="address"
-=======
     initialRouteName="card"
->>>>>>> Stashed changes
   >
     <Stack.Screen name="enable" component={Enable} />
     <Stack.Screen name="choose" component={Choose} />

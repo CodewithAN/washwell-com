@@ -10,6 +10,7 @@ import AuthStack from "./AuthStack";
 import i18n from "../utils/i18n";
 import useFonts from "../utils/useFonts";
 import MainStack from "./MainStack";
+import { configureSDK } from "@network-international/react-native-ngenius";
 
 const MainNavigator = () => {
   const { user, setToken, setUser, setSelectedLanguage } =
@@ -36,6 +37,13 @@ const MainNavigator = () => {
       await useFonts();
       setFontsLoaded(true);
     })();
+  }, []);
+
+  useEffect(() => {
+    configureSDKSDK({
+      language: "en",
+      environment: "SANDBOX",
+    });
   }, []);
 
   if (loading || !fontsLoaded) {
