@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import colors, { externalStyles } from "../utils/Theme";

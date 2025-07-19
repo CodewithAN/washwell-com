@@ -8,14 +8,10 @@ import {
   Platform,
 } from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
-import {
-  horizantGap,
-  primarBorderRadius,
-  API_URL,
-} from "../utils/Constant";
+import { horizantGap, primarBorderRadius, API_URL } from "../utils/Constant";
 import Header from "../components/global/Header";
 import Img from "../components/ui/Img";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import { vw } from "../utils/ScreenSize";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
@@ -188,7 +184,9 @@ const Verification = ({ navigation }) => {
                   ref={(ref) => (inputRefs.current[index] = ref)}
                   value={digit}
                   onChangeText={(value) => handleOtpChange(index, value)}
-                  onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
+                  onKeyPress={({ nativeEvent }) =>
+                    handleKeyPress(index, nativeEvent.key)
+                  }
                   keyboardType="number-pad"
                   maxLength={1}
                   style={[styles.input, error && styles.errorBorder]}

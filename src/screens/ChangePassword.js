@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import colors, { externalStyles } from "../utils/Theme";
@@ -102,10 +102,7 @@ const ChangePassword = () => {
 
   return (
     <View style={styles.container}>
-     
-    
-        <Header space title="Change Password" />
-   
+      <Header space title="Change Password" />
 
       <View style={styles.inputContainer}>
         <View>

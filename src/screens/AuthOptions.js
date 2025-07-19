@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { externalStyles } from "../utils/Theme";
 import { API_URL, horizantGap, primaryHeight } from "../utils/Constant";
 import Img from "../components/ui/Img";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import { vw } from "../utils/ScreenSize";
 import email from "../../assets/icons/email.svg";
 import apple from "../../assets/icons/apple.svg";

@@ -7,14 +7,10 @@ import {
   Platform,
 } from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
-import {
-  horizantGap,
-  API_URL,
-  primarBorderRadius,
-} from "../utils/Constant";
+import { horizantGap, API_URL, primarBorderRadius } from "../utils/Constant";
 import Header from "../components/global/Header";
 import Img from "../components/ui/Img";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import { vw } from "../utils/ScreenSize";
 import RNText from "../components/ui/RNText";
 import RNTextInput from "../components/ui/RNTextInput";
@@ -161,7 +157,9 @@ const Otp = () => {
                   key={index}
                   value={digit}
                   onChangeText={(value) => handleOtpChange(index, value)}
-                  onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
+                  onKeyPress={({ nativeEvent }) =>
+                    handleKeyPress(index, nativeEvent.key)
+                  }
                   ref={(ref) => (inputRefs.current[index] = ref)}
                   style={[styles.otpInput, error && styles.errorBorder]}
                   keyboardType="number-pad"
@@ -197,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: horizantGap,
     gap: 15,
-    paddingBottom: 50, 
+    paddingBottom: 50,
   },
   container: {
     gap: 20,
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     alignSelf: "center",
-    width: "100%", 
+    width: "100%",
   },
   otpInput: {
     backgroundColor: colors.white,
@@ -227,7 +225,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 45,
     borderWidth: 0,
-   
   },
   errorBorder: {
     borderColor: "red",

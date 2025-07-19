@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors, { externalStyles } from "../utils/Theme";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import { horizantGap, primaryHeight, API_URL } from "../utils/Constant";
@@ -30,14 +30,22 @@ import { ContextProvider } from "../global/Context";
 
 const registerSchema = Yup.object().shape({
   name: Yup.string().trim().required("Name is required"),
-  email: Yup.string().trim().email("Invalid email").required("Email is required"),
-  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+  email: Yup.string()
+    .trim()
+    .email("Invalid email")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
   password_confirmation: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords do not match")
     .required("Confirm password is required"),
   phone_number: Yup.string().required("Phone number is required"),
   referred_by: Yup.string().trim().optional(),
-  termsAccepted: Yup.boolean().oneOf([true], "You must accept the Terms and Privacy Policy"),
+  termsAccepted: Yup.boolean().oneOf(
+    [true],
+    "You must accept the Terms and Privacy Policy"
+  ),
 });
 
 const SignUp = ({ navigation }) => {
@@ -142,19 +150,40 @@ const SignUp = ({ navigation }) => {
           <Img source={logo} width={60 * vw} height={70} />
           <View style={styles.container}>
             <View style={styles.buttonContainer}>
-              <Button source={google} variant="white" title="Sign up with Google" />
-              <Button source={email} variant="white" onPress={() => navigation.navigate("login")} title="Log in with Email" />
-              <Button source={apple} variant="white" title="Log in with Apple" />
+              <Button
+                source={google}
+                variant="white"
+                title="Sign up with Google"
+              />
+              <Button
+                source={email}
+                variant="white"
+                onPress={() => navigation.navigate("login")}
+                title="Log in with Email"
+              />
+              <Button
+                source={apple}
+                variant="white"
+                title="Log in with Apple"
+              />
             </View>
             <Divider />
 
             <View style={styles.inputContainer}>
               {[
                 { name: "name", placeholder: "Name" },
-                { name: "email", placeholder: "Email", keyboardType: "email-address" },
+                {
+                  name: "email",
+                  placeholder: "Email",
+                  keyboardType: "email-address",
+                },
                 { name: "referred_by", placeholder: "Referral Code" },
                 { name: "password", placeholder: "Password", secure: true },
-                { name: "password_confirmation", placeholder: "Confirm Password", secure: true },
+                {
+                  name: "password_confirmation",
+                  placeholder: "Confirm Password",
+                  secure: true,
+                },
               ].map(({ name, placeholder, keyboardType, secure }) => (
                 <View
                   key={name}
@@ -171,7 +200,9 @@ const SignUp = ({ navigation }) => {
                     onFocus={() => handleFocus(name)}
                     style={[styles.input, errors[name] && styles.errorBorder]}
                   />
-                  {errors[name] && <RNText style={styles.error}>{errors[name]}</RNText>}
+                  {errors[name] && (
+                    <RNText style={styles.error}>{errors[name]}</RNText>
+                  )}
                 </View>
               ))}
 
@@ -192,28 +223,50 @@ const SignUp = ({ navigation }) => {
                     onChangeText={(text) => handleChange("phone_number", text)}
                     maxLength={14}
                     onFocus={() => handleFocus("phone_number")}
-                    style={[styles.input, errors.phone_number && styles.errorBorder]}
+                    style={[
+                      styles.input,
+                      errors.phone_number && styles.errorBorder,
+                    ]}
                   />
                 </View>
-                {errors.phone_number && <RNText style={styles.error}>{errors.phone_number}</RNText>}
+                {errors.phone_number && (
+                  <RNText style={styles.error}>{errors.phone_number}</RNText>
+                )}
               </View>
             </View>
 
-            <TouchableOpacity style={styles.checkContainer} onPress={handleCheckboxToggle}>
+            <TouchableOpacity
+              style={styles.checkContainer}
+              onPress={handleCheckboxToggle}
+            >
               <MaterialIcons
-                name={formData.termsAccepted ? "check-box" : "check-box-outline-blank"}
+                name={
+                  formData.termsAccepted
+                    ? "check-box"
+                    : "check-box-outline-blank"
+                }
                 size={18}
                 color={colors.primary}
               />
               <RNText>I agree to the Terms and Privacy Policy.</RNText>
             </TouchableOpacity>
-            {errors.termsAccepted && <RNText style={styles.error}>{errors.termsAccepted}</RNText>}
+            {errors.termsAccepted && (
+              <RNText style={styles.error}>{errors.termsAccepted}</RNText>
+            )}
 
-            <Button onPress={handleRegister} title="Sign up" variant="gradient" loading={loading} />
+            <Button
+              onPress={handleRegister}
+              title="Sign up"
+              variant="gradient"
+              loading={loading}
+            />
 
             <View style={styles.haveAccount}>
               <RNText>Have an account?</RNText>
-              <TouchableOpacity onPress={() => navigation.navigate("login")} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("login")}
+                activeOpacity={0.7}
+              >
                 <RNText fontWeight="medium" color="primary">
                   Log in
                 </RNText>

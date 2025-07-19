@@ -1,7 +1,7 @@
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import colors, { externalStyles } from "../utils/Theme";
 import { horizantGap, API_URL } from "../utils/Constant";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import RNText from "../components/ui/RNText";

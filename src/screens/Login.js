@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import colors from "../utils/Theme";
-import logo from "../../assets/images/global/logo.svg";
+import logo from "../../assets/images/global/logo.png";
 import Img from "../components/ui/Img";
 import { vw } from "../utils/ScreenSize";
 import RNTextInput from "../components/ui/RNTextInput";
@@ -61,10 +61,8 @@ const Login = ({ navigation }) => {
       setUser(user);
       setToken(token);
 
-
       await AsyncStorage.setItem("washwell-token", token);
       await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
-
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = { email: "", password: "" };
@@ -113,9 +111,7 @@ const Login = ({ navigation }) => {
             ref={(ref) => (inputRefs.current["email"] = ref)}
             style={[styles.input, errors.email ? styles.errorBorder : null]}
           />
-          {errors.email && (
-            <RNText style={styles.error}>{errors.email}</RNText>
-          )}
+          {errors.email && <RNText style={styles.error}>{errors.email}</RNText>}
         </View>
 
         <View>
@@ -199,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   input: {
-    borderWidth: 0, 
+    borderWidth: 0,
   },
   errorBorder: {
     borderColor: "red",
