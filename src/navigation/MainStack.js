@@ -23,7 +23,11 @@ const Stack = createNativeStackNavigator();
 const MainStack = () => (
   <Stack.Navigator
     screenOptions={{ headerShown: false }}
+<<<<<<< Updated upstream
     initialRouteName="address"
+=======
+    initialRouteName="card"
+>>>>>>> Stashed changes
   >
     <Stack.Screen name="enable" component={Enable} />
     <Stack.Screen name="choose" component={Choose} />
@@ -43,8 +47,11 @@ const MainStack = () => (
     <Stack.Screen name="wallet" component={Wallet} />
     <Stack.Screen name="location" component={Location} />
     <Stack.Screen name="change" component={ChangePassword} />
+<<<<<<< Updated upstream
     
 
+=======
+>>>>>>> Stashed changes
   </Stack.Navigator>
 );
 
