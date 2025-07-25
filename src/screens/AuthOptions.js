@@ -15,11 +15,12 @@ import RNView from "../components/ui/RNView";
 import RNText from "../components/ui/RNText";
 import Divider from "../components/auth/Divider";
 import AuthLayout from "../Layouts/AuthLayout";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 import axios from "axios";
 import { ContextProvider } from "../global/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const phoneSchema = Yup.object().shape({
   phone_number: Yup.string().required("Phone number is required"),
@@ -30,6 +31,15 @@ const AuthOptions = ({ navigation }) => {
   const [formData, setFormData] = useState({ phone_number: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await AsyncStorage.getItem("washwell-token");
+      const user = await AsyncStorage.getItem("washwell-user");
+      console.log(token, "token");
+      console.log(user, "user");
+    };
+    fetchData();
+  }, []);
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -113,7 +123,7 @@ const AuthOptions = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.buttonWrapper}>
-            <Button onPress={handleSubmit} title="Log in" loading={loading} />
+            <Button onPress={handleSubmit} title="Continue" loading={loading} />
           </View>
 
           <Divider />
@@ -121,15 +131,19 @@ const AuthOptions = ({ navigation }) => {
             <Button
               variant="white"
               source={google}
-              title="Log in with Google"
+              title="Continue with Google"
             />
             <Button
               onPress={() => navigation.navigate("login")}
               variant="white"
               source={email}
-              title="Log in with Email"
+              title="Continue with Email"
             />
-            <Button variant="white" source={apple} title="Log in with Apple" />
+            <Button
+              variant="white"
+              source={apple}
+              title="Continue with Apple"
+            />
           </View>
           <Divider />
           <TouchableOpacity activeOpacity={0.7} style={styles.findAccount}>

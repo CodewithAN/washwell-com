@@ -14,4 +14,4 @@ export const txtSm = 13;
 export const txtSM = 14;
 export const txtMd = 15;
 export const txtLg = 17;
-export const txtXl = 19;
+export const txtXl = 21;

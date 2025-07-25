@@ -1,22 +1,26 @@
 import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 import menu from "../../assets/icons/menu.svg";
 import whatsapp from "../../assets/icons/whatsapp.svg";
 import dollar from "../../assets/icons/dollar.svg";
 import bell from "../../assets/icons/Outlined.svg";
 import location from "../../assets/icons/location.svg";
-import offer from "../../assets/icons/offer.png";
 import dryClean from "../../assets/icons/dry.svg";
 import onlyPress from "../../assets/icons/Iron.svg";
 import washFold from "../../assets/icons/Laundry.svg";
 import carpets from "../../assets/icons/Yoga mat.svg";
 import curtains from "../../assets/icons/curtains.svg";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, primarBorderRadius } from "../utils/Constant";
+import { API_URL, horizantGap, primarBorderRadius } from "../utils/Constant";
 import Img from "../components/ui/Img";
 import RNText from "../components/ui/RNText";
 import Button from "../components/ui/Button";
+import Promotion from "../components/home/Promotion";
+import { axiosInstance } from "../utils/Api";
+import { useContext, useEffect } from "react";
+import { ContextProvider } from "../global/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Define the service data array
 const servicesData = [
   {
     icon: dryClean,
@@ -43,10 +47,52 @@ const servicesData = [
   },
 ];
 
+const fetchPromotions = async () => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.get(API_URL + "/promotions-list");
+    return response?.data?.data?.promotions;
+  } catch (error) {
+    console.error(
+      "Error fetching promotions:",
+      error.message,
+      error.response?.data
+    );
+  }
+};
+
 const Home = ({ navigation }) => {
+  const { setSelectedTab, address, setMapState } = useContext(ContextProvider);
+  const { data: promotions, isLoading } = useQuery({
+    queryKey: ["promotions"],
+    queryFn: fetchPromotions,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const address = await AsyncStorage.getItem("washwell-address");
+      let parsedAddress = JSON.parse(address);
+      if (
+        parsedAddress == null ||
+        parsedAddress == undefined ||
+        parsedAddress == ""
+      ) {
+        setMapState("home");
+        navigation.replace("enable");
+      }
+    };
+    fetchAddress();
+  }, []);
+
+  const handleCardPress = (index) => {
+    setSelectedTab(index);
+    navigation.navigate("cart");
+  };
+
   return (
     <>
-      {/* Header Bar */}
       <View style={styles.notificationBar}>
         <TouchableOpacity
           onPress={() => navigation.navigate("menu")}
@@ -56,7 +102,12 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.rightIcons}>
           <Img source={whatsapp} style={{ height: 24, width: 24 }} />
-          <Img source={dollar} style={styles.notificationIcon} />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate("wallet")}
+          >
+            <Img source={dollar} style={styles.notificationIcon} />
+          </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => navigation.navigate("notification")}
@@ -72,19 +123,18 @@ const Home = ({ navigation }) => {
         style={styles.mainContainer}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* Location Bar */}
         <View style={styles.locationBar}>
           <View style={styles.outerContainer}>
             <View style={styles.innerContainer}>
-              <Img source={location} width={14} height={14}></Img>
+              <Img source={location} width={14} height={14} />
             </View>
           </View>
           <View>
             <RNText style={[externalStyles.txtMd, { color: colors.white }]}>
-              Home
+              {address?.label || "N/A"}
             </RNText>
-            <RNText style={{ color: colors.white }}>
-              Muwaileh Park, Sharjah, UAE
+            <RNText numberOfLines={1} style={{ color: colors.white }}>
+              {address?.address || "N/A"}
             </RNText>
           </View>
         </View>
@@ -94,18 +144,13 @@ const Home = ({ navigation }) => {
           <RNText style={externalStyles.txtMd} fontWeight="medium">
             Latest Offers
           </RNText>
-          <View style={styles.offerCard}>
-            <Img source={offer} style={styles.offerImage} resizeMode="cover" />
-            <View style={styles.textOverlay}>
-              <RNText style={[styles.offerTitle, { marginBottom: 5 }]}>
-                Special Summer Offer
-              </RNText>
-              <RNText style={styles.offerDiscount}>40% OFF</RNText>
-            </View>
-          </View>
+          <Promotion
+            navigation={navigation}
+            data={promotions}
+            isLoading={isLoading}
+          />
         </View>
 
-        {/* Services Section */}
         <View style={styles.services}>
           <RNText
             style={[externalStyles.txtMd, styles.servicesText]}
@@ -115,7 +160,12 @@ const Home = ({ navigation }) => {
           </RNText>
           <View style={styles.serviceCards}>
             {servicesData.map((service, index) => (
-              <View key={index} style={styles.serviceCard}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => handleCardPress(index)}
+                key={index}
+                style={styles.serviceCard}
+              >
                 {Array.isArray(service.icon) ? (
                   <View style={styles.iconRow}>
                     {service.icon.map((iconItem, i) => (
@@ -132,14 +182,13 @@ const Home = ({ navigation }) => {
                 ) : (
                   <Img source={service.icon} style={styles.serviceIcon} />
                 )}
-
                 <RNText style={styles.serviceTitle}>{service.title}</RNText>
                 <RNText
                   style={[styles.serviceDesc, index === 1 && styles.press]}
                 >
                   {service.description}
                 </RNText>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
@@ -148,8 +197,8 @@ const Home = ({ navigation }) => {
       {/* Fixed Place Order Button */}
       <View style={styles.fixedButtonContainer}>
         <Button
-          onPress={() => navigation.navigate("cart")}
-          title={"Place Order"}
+          onPress={() => navigation.navigate("place-order")}
+          title="Place Order"
           variant="gradient"
           style={styles.fixedButton}
         />
@@ -168,7 +217,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 8,
-    paddingBottom: 100, 
+    paddingBottom: 100,
     gap: 30,
   },
   notificationBar: {
@@ -204,35 +253,6 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "red",
-  },
-  offerCard: {
-    position: "relative",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  offerImage: {
-    width: "100%",
-    height: 178,
-  },
-  textOverlay: {
-    position: "absolute",
-    top: 0,
-    bottom: 40,
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    paddingLeft: 15,
-  },
-  offerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.primary,
-  },
-  offerDiscount: {
-    fontSize: 16,
-    color: "#fff",
   },
   servicesText: {
     marginBottom: 10,
@@ -292,6 +312,8 @@ const styles = StyleSheet.create({
     borderRadius: primarBorderRadius,
     gap: 10,
     padding: 10,
+    marginTop: 5,
+    paddingRight: 60,
   },
   iconRow: {
     flexDirection: "row",
@@ -303,7 +325,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingHorizontal: horizantGap,
-   
   },
-  
 });

@@ -1,13 +1,17 @@
 import { StyleSheet } from "react-native";
 import { primarBorderRadius, primaryHeight } from "./Constant";
+import font from "./Fonts";
 
 const colors = {
-  primary: "#3A70DD",
+  primary: "#084ABA",
   background: "#CCF5F5",
+  lightGreen: "#CCF5F5",
   lightBlue: "#63C5E9CC",
   white: "#ffffff",
   black: "#000000",
   gray: "#808080",
+  lightGray: "#efefef",
+  // lightGreen: "#bae6f6cc",
 };
 
 const externalStyles = StyleSheet.create({
@@ -41,6 +45,19 @@ const externalStyles = StyleSheet.create({
   },
   input: {
     color: colors.black,
+    flex: 1,
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 4,
+    flexWrap: "wrap",
+  },
+  medium: {
+    fontFamily: font.medium,
+  },
+  bold: {
+    fontFamily: font.bold,
   },
 });
 

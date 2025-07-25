@@ -13,7 +13,10 @@
       "backgroundColor": "#CCF5F5"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyBpuZ8ZSvz02H4--PECiKhyteW9qDhRly0"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,14 +24,31 @@
         "backgroundColor": "#CCF5F5"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.artanistic.WashWell"
+      "package": "com.artanistic.WashWell",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBpuZ8ZSvz02H4--PECiKhyteW9qDhRly0"
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Wash Well to use your location.(You can easily get laundry service on your address)"
+        }
+      ]
+    ],
     "extra": {
       "eas": {
-        "projectId": "4c46f305-d3c9-43a9-b6e3-d32c26652082"
+        "projectId": "a60b4c4b-b40a-438f-89ca-f5ce0428a2dd"
       }
     }
   }

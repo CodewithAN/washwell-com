@@ -1,13 +1,13 @@
-import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Img from "./Img";
 import RNText from "./RNText";
-import {
-  txtSm,
-  primarBorderRadius,
-  primaryHeight,
-  txtMd,
-} from "../../utils/Constant";
+import { primarBorderRadius, primaryHeight, txtMd } from "../../utils/Constant";
 import colors from "../../utils/Theme";
 
 const Button = ({
@@ -49,9 +49,10 @@ const Button = ({
       <View style={[styles.container]}>
         {variant === "gradient" ? (
           <LinearGradient
-            colors={["#3A70DDCC", "#63C5E9CC"]}
-            start={[0, 0]}
-            end={[1, 0]}
+            colors={["rgba(8, 74, 186, 1)", "rgba(0, 173, 239, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            locations={[0.21, 1]}
             style={[buttonStyles, { height }]}
           >
             <View style={styles.content}>
@@ -71,7 +72,7 @@ const Button = ({
               <ActivityIndicator
                 size="small"
                 color={variant === "white" ? "#000" : "#FFF"}
-              /> 
+              />
             ) : (
               <>
                 {source && <Img source={source} style={styles.image} />}

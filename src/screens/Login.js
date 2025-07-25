@@ -28,7 +28,7 @@ const Login = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const { setToken, setUser } = useContext(ContextProvider);
+  const { setToken, setUser, setAddress } = useContext(ContextProvider);
   const inputRefs = useRef({});
 
   const handleChange = (name, value) => {
@@ -57,12 +57,35 @@ const Login = ({ navigation }) => {
       const data = response?.data?.data;
       const user = data?.user;
       const token = data?.token;
+      const addressesResponse = await axios.get(API_URL + "/address", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      const fetchedAddresses = addressesResponse?.data?.data?.addresses || [];
+      console.log(fetchedAddresses, "fetchedAddresses");
+      if (addressesResponse) {
+        let defaultAddress = fetchedAddresses.filter(
+          (item) => item.is_default == 1
+        )[0];
+        console.log(defaultAddress, "defaultAddress");
+        setAddress(defaultAddress);
+        await AsyncStorage.setItem(
+          "washwell-address",
+          JSON.stringify(defaultAddress || "")
+        );
+        setUser(user);
+        setToken(token);
+        await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+        await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
 
-      setUser(user);
-      setToken(token);
-
-      await AsyncStorage.setItem("washwell-token", token);
-      await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+        Toast.show({
+          type: "success",
+          text1: "Logged In Successfully",
+        });
+      }
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = { email: "", password: "" };
@@ -140,7 +163,7 @@ const Login = ({ navigation }) => {
         <Button
           onPress={handleLogin}
           style={styles.btn}
-          title="Login"
+          title="Continue"
           variant="gradient"
           loading={loading}
         />

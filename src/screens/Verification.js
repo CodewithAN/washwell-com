@@ -21,6 +21,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { ContextProvider } from "../global/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { axiosInstance } from "../utils/Api";
 
 const otpSchema = Yup.object().shape({
   code: Yup.string()
@@ -34,6 +35,7 @@ const Verification = ({ navigation }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRefs = useRef([]);
+  const { setAddress } = useContext(ContextProvider);
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
@@ -85,17 +87,32 @@ const Verification = ({ navigation }) => {
       const data = response?.data?.data;
       const user = data?.user;
       const token = data?.token;
-
-      setUser(user);
-      setToken(token);
-
-      await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
-      await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
-
-      Toast.show({
-        type: "success",
-        text1: "Logged In Successfully",
+      const addressesResponse = axios.get(API_URL + "/address", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      const fetchedAddresses = addressesResponse?.data?.data?.addresses || [];
+      if (addressesResponse) {
+        let defaultAddress = fetchedAddresses.filter(
+          (item) => item.is_default == 1
+        )[0];
+        console.log(defaultAddress, "defaultAddress");
+        setAddress(defaultAddress);
+        await AsyncStorage.setItem(
+          "washwell-address",
+          JSON.stringify(defaultAddress || "")
+        );
+        setUser(user);
+        setToken(token);
+        await AsyncStorage.setItem("washwell-token", JSON.stringify(token));
+        await AsyncStorage.setItem("washwell-user", JSON.stringify(user));
+
+        Toast.show({
+          type: "success",
+          text1: "Logged In Successfully",
+        });
+      }
     } catch (error) {
       const message =
         error?.response?.data?.message ||

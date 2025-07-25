@@ -159,7 +159,9 @@ const Orders = ({ navigation }) => {
                 </View>
               </View>
               <View style={{ alignItems: "flex-end", gap: 5 }}>
-                <RNText style={styles.orderDate}>05 Apr 2025, 8 ocean:46 AM</RNText>
+                <RNText style={styles.orderDate}>
+                  05 Apr 2025, 8 ocean:46 AM
+                </RNText>
                 <RNText style={styles.orderPrice}>30 AED</RNText>
               </View>
             </View>
@@ -172,9 +174,9 @@ const Orders = ({ navigation }) => {
       </ScrollView>
 
       {/* Fixed Place Order Button */}
-       <View style={styles.fixedButtonContainer}>
+      <View style={styles.fixedButtonContainer}>
         <Button
-          onPress={() => navigation.navigate("cart")}
+          onPress={() => navigation.navigate("place-order")}
           title={"Place Order"}
           variant="gradient"
           style={styles.fixedButton}
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizantGap,
   },
   contentContainer: {
-    paddingBottom: 100, 
+    paddingBottom: 100,
     gap: 20,
   },
   top: {
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
   },
   orderDate: {
     fontSize: txtXs,
-    color: "#28292C", 
+    color: "#28292C",
   },
   orderBottomRow: {
     flexDirection: "row",
@@ -303,5 +305,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizantGap,
     alignItems: "center",
   },
-
 });

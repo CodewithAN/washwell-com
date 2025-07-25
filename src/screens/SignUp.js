@@ -94,7 +94,10 @@ const SignUp = ({ navigation }) => {
     try {
       setLoading(true);
       await registerSchema.validate(formData, { abortEarly: false });
-      await axios.post(`${API_URL}/register`, formData);
+      await axios.post(`${API_URL}/register`, {
+        ...formData,
+        phone_number: `+971${formData?.phone_number}`,
+      });
       setPhoneNumber(formData.phone_number);
 
       Toast.show({
@@ -153,18 +156,18 @@ const SignUp = ({ navigation }) => {
               <Button
                 source={google}
                 variant="white"
-                title="Sign up with Google"
+                title="Continue with Google"
               />
               <Button
                 source={email}
                 variant="white"
                 onPress={() => navigation.navigate("login")}
-                title="Log in with Email"
+                title="Continue with Email"
               />
               <Button
                 source={apple}
                 variant="white"
-                title="Log in with Apple"
+                title="Continue with Apple"
               />
             </View>
             <Divider />
@@ -197,7 +200,6 @@ const SignUp = ({ navigation }) => {
                     onChangeText={(text) => handleChange(name, text)}
                     keyboardType={keyboardType}
                     secure={secure}
-                    onFocus={() => handleFocus(name)}
                     style={[styles.input, errors[name] && styles.errorBorder]}
                   />
                   {errors[name] && (
@@ -222,7 +224,6 @@ const SignUp = ({ navigation }) => {
                     value={formData.phone_number}
                     onChangeText={(text) => handleChange("phone_number", text)}
                     maxLength={14}
-                    onFocus={() => handleFocus("phone_number")}
                     style={[
                       styles.input,
                       errors.phone_number && styles.errorBorder,

@@ -10,8 +10,11 @@ import note from "../../assets/wallet/note.svg";
 import RNText from "../components/ui/RNText";
 import RNView from "../components/ui/RNView";
 import Button from "../components/ui/Button";
+import { useContext } from "react";
+import { ContextProvider } from "../global/Context";
 
-const Wallet = () => {
+const Wallet = ({ navigation }) => {
+  const { user } = useContext(ContextProvider);
   return (
     <>
       <StatusBar backgroundColor={colors.primary} barStyle={"light-content"} />
@@ -24,7 +27,7 @@ const Wallet = () => {
                 style={[externalStyles.txtLg, { color: colors.white }]}
                 fontWeight="medium"
               >
-                Hello, Shahid
+                {` Hello, ${user?.name}`}
               </RNText>
             </View>
             <View style={styles.notificationWrapper}>
@@ -116,7 +119,10 @@ const Wallet = () => {
           </RNView>
         </View>
         <View style={styles.orderButton}>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("place-order")}
+            activeOpacity={0.7}
+          >
             <Button title={"Place Order"} variant="gradient" />
           </TouchableOpacity>
         </View>
@@ -132,14 +138,15 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 20,
     backgroundColor: colors.background,
-    paddingBottom: "13%",
+    paddingBottom: 20,
   },
   header: {
     backgroundColor: colors.primary,
     paddingHorizontal: horizantGap,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    paddingVertical: 20,
+    paddingBottom: 20,
+    paddingTop: 10,
     gap: 40,
   },
   top: {

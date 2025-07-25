@@ -8,6 +8,9 @@ const Context = (props) => {
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [otp, setOtp] = useState(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [mapState, setMapState] = useState("");
+  const [address, setAddress] = useState(null);
 
   const contextValue = {
     token,
@@ -20,6 +23,12 @@ const Context = (props) => {
     setPhoneNumber,
     otp,
     setOtp,
+    selectedTab,
+    setSelectedTab,
+    mapState,
+    setMapState,
+    address,
+    setAddress,
   };
 
   return (

@@ -1,19 +1,18 @@
-import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { ContextProvider } from "../global/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
-
+// import { OneSignal, LogLevel } from "react-native-onesignal";
 import AuthStack from "./AuthStack";
 import i18n from "../utils/i18n";
 import useFonts from "../utils/useFonts";
 import MainStack from "./MainStack";
-import { configureSDK } from "@network-international/react-native-ngenius";
 
 const MainNavigator = () => {
-  const { user, setToken, setUser, setSelectedLanguage } =
+  const { user, setToken, setUser, address, setSelectedLanguage, setAddress } =
     useContext(ContextProvider);
   const [loading, setLoading] = useState(true);
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -23,9 +22,11 @@ const MainNavigator = () => {
         const token = await AsyncStorage.getItem("washwell-token");
         const user = await AsyncStorage.getItem("washwell-user");
         const lang = await AsyncStorage.getItem("washwell-lang");
+        const address = await AsyncStorage.getItem("washwell-address");
         const language = lang ? JSON.parse(lang) : "en";
         i18n.changeLanguage(language);
         setSelectedLanguage(language);
+        setAddress(JSON.parse(address));
         setToken(token);
         setUser(JSON.parse(user));
       } catch (error) {
@@ -39,12 +40,11 @@ const MainNavigator = () => {
     })();
   }, []);
 
-  useEffect(() => {
-    configureSDKSDK({
-      language: "en",
-      environment: "SANDBOX",
-    });
-  }, []);
+  // useEffect(() => {
+  //   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  //   OneSignal.initialize("174f9cc6-c406-477c-ae9a-2316e60b9634");
+  //   OneSignal.Notifications.requestPermission(false);
+  // }, []);
 
   if (loading || !fontsLoaded) {
     return null;

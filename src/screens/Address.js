@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Location from "expo-location";
 import {
   StyleSheet,
   View,
@@ -7,13 +8,14 @@ import {
   TextInput,
   Modal,
   Pressable,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import RNText from "../components/ui/RNText";
 import Header from "../components/global/Header";
 import colors, { externalStyles } from "../utils/Theme";
-import { horizantGap, txtMd, txtSm } from "../utils/Constant";
+import { horizantGap, txtMd, txtSm, txtXs } from "../utils/Constant";
 import Img from "../components/ui/Img";
-import RNView from "../components/ui/RNView";
 import choose from "../../assets/icons/choosesearch.svg";
 import ellipse from "../../assets/address/Ellipse.svg";
 import office from "../../assets/address/office.svg";
@@ -25,88 +27,87 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { axiosInstance } from "../utils/Api";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ContextProvider } from "../global/Context";
 
 const Address = ({ navigation }) => {
-  const [addresses, setAddresses] = useState([]); // Initialize as empty array
+  const [addresses, setAddresses] = useState([]);
+  const [filteredAddresses, setFilteredAddresses] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const isMounted = useRef(true);
+  const { setMapState, setAddress } = useContext(ContextProvider);
 
   useEffect(() => {
     return () => {
-      isMounted.current = false; // Cleanup on unmount
+      isMounted.current = false;
     };
   }, []);
+
+  const checkLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    return status === "granted";
+  };
+
+  const handleNavigation = async (screen) => {
+    const hasPermission = await checkLocationPermission();
+    if (!hasPermission) {
+      navigation.replace("Enable");
+    } else {
+      setMapState("address");
+      navigation.replace(screen);
+    }
+  };
 
   const fetchAddresses = async () => {
     try {
       setLoading(true);
-      console.log("Starting fetchAddresses");
-
-      // Check token
       const token = await AsyncStorage.getItem("washwell-token");
-      console.log("Token retrieved:", token);
       if (!token) {
-        console.warn("No token found in AsyncStorage");
-        if (isMounted.current) {
-          setAddresses([]);
-          console.log("Set addresses to [] due to missing token");
-        }
         Toast.show({
           type: "error",
           text1: "Error",
           text2: "Authentication token missing. Please log in again.",
         });
-        navigation.navigate("login"); // Redirect to login
+        if (isMounted.current) {
+          setAddresses([]);
+          setFilteredAddresses([]);
+        }
         return;
       }
 
       const instance = await axiosInstance();
-      console.log("Axios instance config:", instance.defaults);
       const response = await instance.get("/address");
-      console.log("API Response from /address:", JSON.stringify(response, null, 2));
-      console.log("Response.data specifically:", JSON.stringify(response.data, null, 2));
+      const fetchedAddresses = response?.data?.data?.addresses;
+      let defaultAddress = fetchedAddresses.filter(
+        (item) => item.is_default == 1
+      )[0];
+      console.log(defaultAddress, "defaultAddress");
+      setAddress(defaultAddress);
+      await AsyncStorage.setItem(
+        "washwell-address",
+        JSON.stringify(defaultAddress)
+      );
 
-      // Handle response being undefined or not an array
-      if (!response || !response.data) {
-        console.warn("API response or response.data is undefined/null");
+      if (Array.isArray(fetchedAddresses)) {
+        const sanitizedAddresses = fetchedAddresses.map((addr) => ({
+          ...addr,
+          label:
+            addr.label ||
+            (addr.is_default ? "Default Address" : "Unnamed Address"),
+          street: addr.street || "",
+          address: addr.address || "",
+          villa: addr.villa || "",
+        }));
         if (isMounted.current) {
-          setAddresses([]);
-          console.log("Set addresses to [] due to invalid response");
-        }
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "No addresses returned from server",
-        });
-        return;
-      }
-
-      // Check for response.data.addresses
-      if (Array.isArray(response.data.addresses)) {
-        console.log("Setting addresses to:", JSON.stringify(response.data.addresses, null, 2));
-        if (isMounted.current) {
-          setAddresses(response.data.addresses);
-          console.log("Addresses set successfully");
-        }
-      } else if (Array.isArray(response.data.data)) {
-        console.log("Setting addresses to nested response.data.data:", JSON.stringify(response.data.data, null, 2));
-        if (isMounted.current) {
-          setAddresses(response.data.data);
-          console.log("Addresses set successfully");
-        }
-      } else if (Array.isArray(response.data)) {
-        console.log("Setting addresses to:", JSON.stringify(response.data, null, 2));
-        if (isMounted.current) {
-          setAddresses(response.data);
-          console.log("Addresses set successfully");
+          setAddresses(sanitizedAddresses);
+          setFilteredAddresses(sanitizedAddresses);
         }
       } else {
-        console.warn("API response is not an array:", JSON.stringify(response.data, null, 2));
         if (isMounted.current) {
           setAddresses([]);
-          console.log("Set addresses to [] due to invalid format");
+          setFilteredAddresses([]);
         }
         Toast.show({
           type: "error",
@@ -115,10 +116,14 @@ const Address = ({ navigation }) => {
         });
       }
     } catch (error) {
-      console.error("Error fetching addresses:", error.message, error.response?.data);
+      console.error(
+        "Error fetching addresses:",
+        error.message,
+        error.response?.data
+      );
       if (isMounted.current) {
         setAddresses([]);
-        console.log("Set addresses to [] due to error");
+        setFilteredAddresses([]);
       }
       Toast.show({
         type: "error",
@@ -126,71 +131,79 @@ const Address = ({ navigation }) => {
         text2: error?.response?.data?.message || "Failed to fetch addresses",
       });
       if (error.response?.status === 401) {
-        console.warn("Unauthorized: Invalid token");
-        navigation.navigate("login"); // Redirect to login
       }
     } finally {
-      if (isMounted.current) {
-        setLoading(false);
-        console.log("Fetch completed, loading set to false");
-      }
+      if (isMounted.current) setLoading(false);
     }
   };
 
-  // Fetch addresses when screen is focused
   useFocusEffect(
     useCallback(() => {
-      console.log("Screen focused, fetching addresses");
       fetchAddresses();
-      return () => {
-        console.log("Screen unfocused");
-      };
     }, [])
   );
 
-  // Log state changes and prevent undefined
-  useEffect(() => {
-    console.log("Addresses state changed:", JSON.stringify(addresses, null, 2));
-    if (addresses === undefined) {
-      console.error("Addresses state is undefined!");
-      if (isMounted.current) {
-        setAddresses([]);
-        console.log("Reset addresses to [] due to undefined state");
-      }
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredAddresses(addresses);
+      return;
     }
-  }, [addresses]);
+    const filtered = addresses.filter(
+      (addr) =>
+        addr.label.toLowerCase().includes(query.toLowerCase()) ||
+        addr.address.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredAddresses(filtered);
+  };
 
   const handleSetDefault = async (id) => {
+    const selectedAddress = addresses.find((addr) => addr.id === id);
+    if (selectedAddress.is_default) {
+      return;
+    }
+
     try {
       const instance = await axiosInstance();
       await instance.post("/default-address", { id });
-      setAddresses((prev) => {
-        console.log("Current addresses in handleSetDefault:", JSON.stringify(prev, null, 2));
-        if (!Array.isArray(prev)) {
-          console.warn("Addresses is not an array in handleSetDefault:", prev);
-          return [];
-        }
-        return prev.map((addr) =>
+      setAddress(selectedAddress);
+      await AsyncStorage.setItem(
+        "washwell-address",
+        JSON.stringify(selectedAddress)
+      );
+      setAddresses((prev) =>
+        prev.map((addr) =>
           addr.id === id
-            ? { ...addr, is_default: 1 }
+            ? { ...addr, is_default: 1, label: addr.label || "Default Address" }
             : { ...addr, is_default: 0 }
-        );
-      });
+        )
+      );
+      setFilteredAddresses((prev) =>
+        prev.map((addr) =>
+          addr.id === id
+            ? { ...addr, is_default: 1, label: addr.label || "Default Address" }
+            : { ...addr, is_default: 0 }
+        )
+      );
+
       Toast.show({
         type: "success",
         text1: "Success",
         text2: "Default address updated",
       });
     } catch (error) {
-      console.error("Error setting default address:", error.message, error.response?.data);
+      console.error(
+        "Error setting default address:",
+        error.message,
+        error.response?.data
+      );
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: error?.response?.data?.message || "Failed to set default address",
+        text2:
+          error?.response?.data?.message || "Failed to set default address",
       });
       if (error.response?.status === 401) {
-        console.warn("Unauthorized: Invalid token");
-        navigation.navigate("login"); // Redirect to login
       }
     }
   };
@@ -199,14 +212,48 @@ const Address = ({ navigation }) => {
     try {
       const instance = await axiosInstance();
       await instance.post("/delete-address", { id: addressToDelete });
-      setAddresses((prev) => {
-        console.log("Current addresses in handleDelete:", JSON.stringify(prev, null, 2));
-        if (!Array.isArray(prev)) {
-          console.warn("Addresses is not an array in handleDelete:", prev);
-          return [];
+
+      const wasDefault = addresses.find(
+        (addr) => addr.id === addressToDelete
+      )?.is_default;
+      setAddresses((prev) =>
+        prev.filter((addr) => addr.id !== addressToDelete)
+      );
+      setFilteredAddresses((prev) =>
+        prev.filter((addr) => addr.id !== addressToDelete)
+      );
+
+      if (wasDefault && addresses.length > 1) {
+        const newDefaultId = addresses.find(
+          (addr) => addr.id !== addressToDelete
+        )?.id;
+        if (newDefaultId) {
+          await instance.post("/default-address", { id: newDefaultId });
+          setAddresses((prev) =>
+            prev.map((addr) =>
+              addr.id === newDefaultId
+                ? {
+                    ...addr,
+                    is_default: 1,
+                    label: addr.label || "Default Address",
+                  }
+                : addr
+            )
+          );
+          setFilteredAddresses((prev) =>
+            prev.map((addr) =>
+              addr.id === newDefaultId
+                ? {
+                    ...addr,
+                    is_default: 1,
+                    label: addr.label || "Default Address",
+                  }
+                : addr
+            )
+          );
         }
-        return prev.filter((addr) => addr.id !== addressToDelete);
-      });
+      }
+
       setModalVisible(false);
       Toast.show({
         type: "success",
@@ -214,15 +261,17 @@ const Address = ({ navigation }) => {
         text2: "Address deleted successfully",
       });
     } catch (error) {
-      console.error("Error deleting address:", error.message, error.response?.data);
+      console.error(
+        "Error deleting address:",
+        error.message,
+        error.response?.data
+      );
       Toast.show({
         type: "error",
         text1: "Error",
         text2: error?.response?.data?.message || "Failed to delete address",
       });
       if (error.response?.status === 401) {
-        console.warn("Unauthorized: Invalid token");
-        navigation.navigate("login"); // Redirect to login
       }
     }
   };
@@ -231,15 +280,6 @@ const Address = ({ navigation }) => {
     setAddressToDelete(id);
     setModalVisible(true);
   };
-
-  // Debug log before rendering
-  console.log("Addresses state before render:", JSON.stringify(addresses, null, 2));
-
-  // Ensure addresses is an array before rendering
-  const safeAddresses = Array.isArray(addresses) ? addresses : [];
-  if (!Array.isArray(addresses)) {
-    console.warn("Addresses is not an array before render:", addresses);
-  }
 
   return (
     <View style={styles.mainContainer}>
@@ -250,6 +290,8 @@ const Address = ({ navigation }) => {
           placeholder="Find an Address ..."
           placeholderTextColor={colors.gray}
           style={externalStyles.input}
+          value={searchQuery}
+          onChangeText={handleSearch}
         />
       </View>
 
@@ -258,81 +300,124 @@ const Address = ({ navigation }) => {
           Saved addresses
         </RNText>
         <TouchableOpacity
-          onPress={() => {
-            console.log("Navigating to add address screen");
-            navigation.navigate("add");
-          }}
+          onPress={() => handleNavigation("location")}
           style={styles.add}
         >
           <RNText>Add New</RNText>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.addressContainer}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.addressContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {loading ? (
-          <RNText>Loading addresses...</RNText>
-        ) : safeAddresses.length === 0 ? (
-          <RNText>No addresses found. Add a new address.</RNText>
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : filteredAddresses.length === 0 ? (
+          <RNText>No addresses found.</RNText>
         ) : (
-          safeAddresses.map((address) => (
-            <TouchableOpacity
-              key={address.id}
-              onPress={() => handleSetDefault(address.id)}
-              style={[
-                styles.addressCard,
-                address.is_default ? styles.border : null,
-              ]}
-            >
-              <View style={styles.top}>
-                <View style={styles.Img}>
-                  <Img
-                    source={address.is_default ? borderEllipse : ellipse}
-                    width={36}
-                    height={36}
-                    style={styles.outer}
-                  />
-                  <Img
-                    source={address.label.toLowerCase() === "home" ? home : office}
-                    width={25}
-                    height={20}
-                    style={styles.inner}
-                  />
+          filteredAddresses.map((address) => (
+            <View key={address.id} style={styles.addressCardWrapper}>
+              <TouchableOpacity
+                onPress={() => handleSetDefault(address.id)}
+                activeOpacity={0.8}
+                style={[
+                  styles.addressCard,
+                  address.is_default ? styles.border : null,
+                ]}
+              >
+                <View style={{ flex: 1, gap: 8 }}>
+                  <View style={styles.top}>
+                    <View
+                      style={{
+                        gap: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={styles.Img}>
+                        <Img
+                          source={address.is_default ? borderEllipse : ellipse}
+                          width={36}
+                          height={36}
+                          style={styles.outer}
+                        />
+                        <Img
+                          source={
+                            address.label?.toLowerCase().includes("home")
+                              ? home
+                              : office
+                          }
+                          width={25}
+                          height={20}
+                          style={styles.inner}
+                        />
+                      </View>
+                      <View>
+                        <RNText
+                          style={externalStyles.txtMd}
+                          fontWeight="medium"
+                        >
+                          {address.label}
+                        </RNText>
+                      </View>
+                    </View>
+                  </View>
+                  <View>
+                    <View style={styles.text}>
+                      {address.address ? (
+                        <RNText>{address.address}</RNText>
+                      ) : (
+                        <RNText style={{ color: colors.gray }}>
+                          Address: Not provided
+                        </RNText>
+                      )}
+                    </View>
+                    <View>
+                      <RNText>
+                        {address.label == "Villa"
+                          ? `Community Name:${
+                              address?.community_name || "N/A"
+                            }, Villa No:${
+                              address?.street || "N/A"
+                            },  Stree No:${address?.villa || "N/A"} `
+                          : `Building Name:${
+                              address?.building_name || "N/A"
+                            }, Apartment Number:${
+                              address?.building_name || "N/A"
+                            } `}
+                      </RNText>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => openDeleteModal(address.id)}
+                    style={styles.deleteButton}
+                  >
+                    <MaterialIcons
+                      name="delete"
+                      size={14}
+                      color={colors.white}
+                    />
+                    <RNText style={styles.deleteButtonText}>Delete</RNText>
+                  </TouchableOpacity>
                 </View>
-                <RNText style={externalStyles.txtMd} fontWeight="medium">
-                  {address.label || "N/A"}
-                </RNText>
-                <TouchableOpacity
-                  onPress={() => openDeleteModal(address.id)}
-                  style={styles.deleteButton}
-                >
-                  <MaterialIcons name="delete" size={20} color={colors.red} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.bottom}>
-                <View style={styles.text}>
-                  <RNText>{address.street || "N/A"}</RNText>
-                  <RNText>{address.address || "N/A"}</RNText>
-                  <RNText>{address.villa || "N/A"}</RNText>
+                <View>
+                  <Img source={map} width={73} height={73} />
                 </View>
-                <Img source={map} width={73} height={73} />
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           ))
         )}
-      </View>
+      </ScrollView>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("location")}
+        onPress={() => handleNavigation("location")}
         activeOpacity={0.7}
         style={styles.mapButton}
       >
         <Img source={mapIcon} width={24} height={24} />
-        <RNText
-          style={[externalStyles.txtMd, styles.mapInput]}
-          fontWeight="regular"
-        >
-          Map
-        </RNText>
+        <RNText style={styles.mapInput}>Map</RNText>
       </TouchableOpacity>
 
       <Modal
@@ -358,7 +443,7 @@ const Address = ({ navigation }) => {
                 style={[styles.modalButton, styles.deleteButtonModal]}
                 onPress={handleDelete}
               >
-                <RNText style={styles.buttonText}>Delete</RNText>
+                <RNText style={styles.buttonText}>Yes</RNText>
               </Pressable>
             </View>
           </View>
@@ -375,13 +460,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: horizantGap,
-    paddingBottom: "25%",
+    paddingBottom: 20,
     gap: 20,
   },
   top: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
   textMiddle: {
     flexDirection: "row",
@@ -406,10 +490,20 @@ const styles = StyleSheet.create({
   text: {
     fontSize: txtMd,
     gap: 5,
+    flex: 1,
   },
   addressCard: {
-    gap: 5,
     paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: colors.white,
+    display: "flex",
+    flexDirection: "row",
+    gap: 20,
+    alignItems: "center",
+  },
+  addressCardWrapper: {
+    marginBottom: 10,
   },
   bottom: {
     flexDirection: "row",
@@ -418,29 +512,42 @@ const styles = StyleSheet.create({
   },
   addressContainer: {
     gap: 15,
+    paddingBottom: 80,
   },
   border: {
-    borderStyle: "solid",
     borderColor: colors.primary,
     borderWidth: 2,
   },
   mapButton: {
-    width: "25%",
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     backgroundColor: colors.primary,
-    paddingVertical: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 20,
     gap: 5,
-    marginHorizontal: "auto",
-    marginTop: "auto",
   },
   mapInput: {
     color: "#F8F3EA",
   },
   deleteButton: {
-    padding: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    marginTop: 5,
+    alignSelf: "flex-start",
+  },
+  deleteButtonText: {
+    color: colors.white,
+    fontSize: txtXs,
+    marginLeft: 5,
   },
   modalOverlay: {
     flex: 1,
@@ -478,7 +585,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray,
   },
   deleteButtonModal: {
-    backgroundColor: colors.red,
+    backgroundColor: colors.primary,
   },
   buttonText: {
     color: colors.white,

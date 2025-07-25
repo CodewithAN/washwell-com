@@ -1,8 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import logo from "../../assets/images/global/logo.png";
-import Img from "../components/ui/Img";
-import { vw } from "../utils/ScreenSize";
-import colors, { externalStyles } from "../utils/Theme";
+import colors from "../utils/Theme";
 import { horizantGap } from "../utils/Constant";
 import RNTextInput from "../components/ui/RNTextInput";
 import Button from "../components/ui/Button";
@@ -102,73 +99,75 @@ const ChangePassword = () => {
 
   return (
     <View style={styles.container}>
-      <Header space title="Change Password" />
+      <Header title="Change Password" />
 
-      <View style={styles.inputContainer}>
-        <View>
-          <RNTextInput
-            placeholder="Old Password"
-            secure
-            value={oldPassword}
-            onChangeText={(text) => {
-              setOldPassword(text);
-              setOldPasswordError("");
-            }}
-            style={[styles.input, oldPasswordError && styles.errorBorder]}
-          />
-          {oldPasswordError && (
-            <RNText style={styles.error}>{oldPasswordError}</RNText>
-          )}
+      <View style={styles.mainContainer}>
+        <View style={styles.inputContainer}>
+          <View>
+            <RNTextInput
+              placeholder="Old Password"
+              secure
+              value={oldPassword}
+              onChangeText={(text) => {
+                setOldPassword(text);
+                setOldPasswordError("");
+              }}
+              style={[styles.input, oldPasswordError && styles.errorBorder]}
+            />
+            {oldPasswordError && (
+              <RNText style={styles.error}>{oldPasswordError}</RNText>
+            )}
+          </View>
+
+          <View>
+            <RNTextInput
+              placeholder="New Password"
+              secure
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setPasswordError("");
+                setPasswordMismatchError("");
+              }}
+              style={[styles.input, passwordError && styles.errorBorder]}
+            />
+            {passwordError && (
+              <RNText style={styles.error}>{passwordError}</RNText>
+            )}
+          </View>
+
+          <View>
+            <RNTextInput
+              placeholder="Confirm Password"
+              secure
+              value={passwordConfirmation}
+              onChangeText={(text) => {
+                setPasswordConfirmation(text);
+                setConfirmPasswordError("");
+                setPasswordMismatchError("");
+              }}
+              style={[
+                styles.input,
+                (confirmPasswordError || passwordMismatchError) &&
+                  styles.errorBorder,
+              ]}
+            />
+            {confirmPasswordError && (
+              <RNText style={styles.error}>{confirmPasswordError}</RNText>
+            )}
+            {passwordMismatchError && (
+              <RNText style={styles.error}>{passwordMismatchError}</RNText>
+            )}
+          </View>
         </View>
 
-        <View>
-          <RNTextInput
-            placeholder="New Password"
-            secure
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setPasswordError("");
-              setPasswordMismatchError("");
-            }}
-            style={[styles.input, passwordError && styles.errorBorder]}
-          />
-          {passwordError && (
-            <RNText style={styles.error}>{passwordError}</RNText>
-          )}
-        </View>
-
-        <View>
-          <RNTextInput
-            placeholder="Confirm Password"
-            secure
-            value={passwordConfirmation}
-            onChangeText={(text) => {
-              setPasswordConfirmation(text);
-              setConfirmPasswordError("");
-              setPasswordMismatchError("");
-            }}
-            style={[
-              styles.input,
-              (confirmPasswordError || passwordMismatchError) &&
-                styles.errorBorder,
-            ]}
-          />
-          {confirmPasswordError && (
-            <RNText style={styles.error}>{confirmPasswordError}</RNText>
-          )}
-          {passwordMismatchError && (
-            <RNText style={styles.error}>{passwordMismatchError}</RNText>
-          )}
-        </View>
+        <Button
+          title="Change Password"
+          variant="gradient"
+          onPress={handleChangePassword}
+          loading={loading}
+        />
       </View>
-
-      <Button
-        title="Change Password"
-        variant="gradient"
-        onPress={handleChangePassword}
-        loading={loading}
-      />
     </View>
   );
 };
@@ -180,7 +179,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
     alignItems: "center",
-    width: "100%",
     paddingHorizontal: horizantGap,
     gap: 25,
   },
@@ -203,5 +201,12 @@ const styles = StyleSheet.create({
   errorBorder: {
     borderColor: "red",
     borderWidth: 1,
+  },
+  mainContainer: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    paddingBottom: 20,
   },
 });

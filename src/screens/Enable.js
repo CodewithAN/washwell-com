@@ -1,12 +1,27 @@
-import { StyleSheet, View, Dimensions } from "react-native";
+import { StyleSheet, View } from "react-native";
+import * as Location from "expo-location";
 import RNText from "../components/ui/RNText";
 import colors, { externalStyles } from "../utils/Theme";
 import { horizantGap } from "../utils/Constant";
 import enable from "../../assets/images/global/enable.svg";
 import Img from "../components/ui/Img";
 import Button from "../components/ui/Button";
+import Toast from "react-native-toast-message";
 
 const Enable = ({ navigation }) => {
+  const requestLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      navigation.replace("location");
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Location permission denied. Please enable location services.",
+      });
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.inputContainer}>
@@ -28,11 +43,12 @@ const Enable = ({ navigation }) => {
         <Img source={enable} style={styles.image} />
       </View>
       <Button
-        onPress={() => navigation.navigate("choose")}
+        onPress={requestLocationPermission}
         title="Turn on location"
         variant="gradient"
         style={styles.button}
       />
+      <Toast />
     </View>
   );
 };
@@ -45,7 +61,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: "center",
     paddingHorizontal: horizantGap,
-    paddingVertical: "13%",
+    paddingTop: "13%",
+    paddingBottom: 20,
     justifyContent: "space-between",
   },
   heading: {
